@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import Home from '@/Home.vue'
+import AchatsConf from '@/AchatsConf.vue'
+import AchatsStats from '@/AchatsStats.vue'
 
 Vue.use(VueRouter)
 
@@ -31,6 +33,14 @@ export default new VueRouter({
     {
       path: '/',
       component: Home
+    },
+    {
+      path: '/achats-configuration',
+      component: AchatsConf
+    },
+    {
+      path: '/achats-statistiques',
+      component: AchatsStats
     }
   ]
 })
