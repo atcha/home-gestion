@@ -2,8 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import Home from '@/Home.vue'
-import AchatsConf from '@/AchatsConf.vue'
-import AchatsStats from '@/AchatsStats.vue'
+import AchatsConf from '@/achats/AchatsConf.vue'
+import AchatsStats from '@/achats/AchatsStats.vue'
 
 Vue.use(VueRouter)
 
