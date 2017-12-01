@@ -14,20 +14,7 @@
             <span slot="subtitle">Optional subtitle</span>
           </q-toolbar-title>
         </q-toolbar>
-        <!-- Left Side Panel -->
-        <div slot="left">
-          <q-list no-border link inset-separator>
-            <q-list-header>Essential Links</q-list-header>
-            <q-side-link item to="/">
-              <q-item-side icon="home" />
-              <q-item-main label="Accueil" />
-            </q-side-link>
-            <q-side-link item to="/achats-configuration">
-              <q-item-side icon="school" />
-              <q-item-main label="Configuration" />
-            </q-side-link>
-          </q-list>
-        </div>
+        <side-bar slot="left" />
         <!-- sub-routes get injected here: -->
         <router-view />
         <!-- Footer -->
@@ -49,12 +36,10 @@
     QBtn,
     QIcon,
     QRouteTab,
-    QTabs,
-    QList,
-    QListHeader,
-    QSideLink,
-    QItemMain,
-    QItemSide} from 'quasar-framework'
+    QTabs
+  } from 'quasar-framework'
+
+  import SideBar from './components/Sidebar.vue'
 /*
  * Root component
  */
@@ -67,11 +52,7 @@ export default {
       QIcon,
       QRouteTab,
       QTabs,
-      QList,
-      QListHeader,
-      QSideLink,
-      QItemMain,
-      QItemSide
+      SideBar
     }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <h5>Welcome to your Quasar PWA</h5>
+    <h4>Bienvenue sur l'application de gestion maison</h4>
     <ul>
       <li><a href="http://quasar-framework.org" target="_blank" rel="noopener">Docs</a></li>
       <li><a href="http://forum.quasar-framework.org" target="_blank" rel="noopener">Forum</a></li>
