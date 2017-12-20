@@ -1,6 +1,10 @@
-# Quasar PWA App
+# Home Gestion App
 
 > A Quasar PWA project
+
+## Explication
+
+This App is used to manage your purchase, give stats about it and less spend money. 
 
 ## Build Setup
 
