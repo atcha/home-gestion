@@ -10,6 +10,7 @@
             <q-icon name="menu" />
           </q-btn>
           <div class="logo-container">
+            <!--<img src="./assets/logo-home-gestion.svg">-->
             <object type="image/svg+xml" data="~assets/logo-home-gestion.svg" width="30" height="30">
               <img src="~assets/logo-home-gestion.png" width="30" height="30" />
             </object>
