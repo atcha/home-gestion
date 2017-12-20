@@ -2,7 +2,7 @@
 
 > A Quasar PWA project
 
-## Explication
+## Explanation
 
 This App is used to manage your purchase, give stats about it and less spend money. 
 
