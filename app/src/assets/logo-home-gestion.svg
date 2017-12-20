@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 1500 1500">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #00bab8;
+      }
+
+      .cls-1, .cls-2 {
+        fill-rule: evenodd;
+      }
+
+      .cls-2 {
+        fill: #333;
+      }
+    </style>
+  </defs>
+  <g id="Plan_de_travail_1" data-name="Plan de travail 1">
+    <path id="Forme_1_copie" data-name="Forme 1 copie" class="cls-1" d="M752.22,1474.76l726.27-723.735-165.84-166.7L752.221,1143.15,524.4,913.158,356.1,1078.34Z"/>
+    <path id="Forme_1_copie_2" data-name="Forme 1 copie 2" class="cls-2" d="M753.809,25.089L504,275V180H288V489L27.431,748.931,193.323,915.687,753.838,356.776l227.9,230.069L1150.07,421.64Z"/>
+  </g>
+</svg>
