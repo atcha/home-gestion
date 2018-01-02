@@ -7,27 +7,47 @@
       <q-tab slot="title" name="confs" label="configurations" icon="build" />
 
       <q-tab-pane name="add">
-        <div class="form-purchase">
-          <q-input
-            float-label="Nom du produit"
-            v-model="name" />
-          <q-input
-            float-label="Prix du produit"
-            v-model="price" :after="[
-              {
-                icon: 'euro symbol'
-              }
-            ]" />
-          <q-select
-            float-label="Rayons"
-            v-model="shelving"
-            :options="shelvings"
-            multiple="true"
-            radio="true" />
-          <q-select
-            float-label="Magasins"
-            v-model="store"
-            :options="stores" />
+        <div class="form-purchase row sm-gutter">
+          <div class="col-4">
+            <q-input
+              float-label="Nom du produit"
+              v-model="name" />
+          </div>
+          <div class="col-2">
+            <q-input
+              float-label="Prix du produit"
+              v-model="price" :after="[
+                {
+                  icon: 'euro symbol'
+                }
+              ]" />
+          </div>
+          <div class="col">
+            <q-input
+              float-label="Prix au kg"
+              v-model="priceWeight" :after="[
+                {
+                  icon: 'euro symbol'
+                }
+              ]" />
+          </div>
+          <div class="col">
+            <q-select
+              float-label="Rayons"
+              v-model="shelving"
+              :options="shelvings"
+              multiple="true"
+              radio="true" />
+          </div>
+          <div class="col">
+            <q-select
+              float-label="Magasins"
+              v-model="store"
+              :options="stores" />
+          </div>
+          <div class="col">
+            <q-btn color="primary" @click="submit">Submit</q-btn>
+          </div>
         </div>
       </q-tab-pane>
       <q-tab-pane name="stats">Tab Three</q-tab-pane>
@@ -42,8 +62,10 @@
     QTab,
     QTabPane,
     QInput,
-    QSelect
+    QSelect,
+    QBtn
   } from 'quasar-framework'
+
   export default {
     name: 'achats',
     components: {
@@ -51,12 +73,14 @@
       QTab,
       QTabPane,
       QInput,
-      QSelect
+      QSelect,
+      QBtn
     },
     data () {
       return {
         name: '',
         price: '',
+        priceWeight: '',
         store: '',
         shelving: [],
         stores: [
