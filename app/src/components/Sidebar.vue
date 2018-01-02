@@ -1,7 +1,7 @@
 <template>
   <!-- Left Side Panel -->
   <q-list no-border link>
-    <q-list-header>Essential Links</q-list-header>
+    <q-list-header>Menu</q-list-header>
     <q-side-link item to="/">
       <q-item-side icon="home" />
       <q-item-main label="Accueil" />
