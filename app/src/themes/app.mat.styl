@@ -16,6 +16,8 @@
 /*
  * GLOBAL
  */
+
+// Layout
 main
   .container
     margin 0 15px
@@ -25,12 +27,29 @@ header
   margin 0
   background-color $primary
 
+// Texts
+h4
+  color $tertiary
+
 
 /*
- * Components
+ * COMPONENTS
  */
 
 // Toolbar
 .q-toolbar
   > .q-btn
     margin-right 1.2rem
+
+.q-tabs-head
+  padding 0!important
+  .q-tab
+    &.active
+      background-color $primary-darken
+
+
+/*
+ * SPECIFIC
+ */
+
+
