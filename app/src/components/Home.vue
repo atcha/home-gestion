@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home container">
     <h4>Bienvenue sur l'application de gestion maison</h4>
     <ul>
       <li><a href="http://quasar-framework.org" target="_blank" rel="noopener">Docs</a></li>

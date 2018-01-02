@@ -3,24 +3,23 @@
   <div id="q-app">
     <header></header>
     <main>
-      <q-layout ref="layout" view="hHh Lpr lFf" :right-breakpoint="1100">
+      <q-layout ref="layout" view="hHh Lpr fff">
         <!-- Header -->
         <q-toolbar slot="header" color="dark">
           <q-btn flat @click="$refs.layout.toggleLeft()">
             <q-icon name="menu" />
           </q-btn>
           <div class="logo-container">
-            <!--<img src="./assets/logo-home-gestion.svg">-->
             <object type="image/svg+xml" data="~assets/logo-home-gestion.svg" width="30" height="30">
               <img src="~assets/logo-home-gestion.png" width="30" height="30" />
             </object>
           </div>
           <q-toolbar-title>
-            Layout Header
-            <span slot="subtitle">Optional subtitle</span>
+            Home gestion
+            <span slot="subtitle">Outils d'administration des tâches et dépenses</span>
           </q-toolbar-title>
         </q-toolbar>
-        <side-bar slot="left" />
+        <sidebar slot="left" />
         <!-- sub-routes get injected here: -->
         <router-view />
       </q-layout>
@@ -33,13 +32,15 @@
     QLayout,
     QToolbar,
     QToolbarTitle,
+    QTabs,
+    QRouteTab,
     QBtn,
     QIcon,
-    QRouteTab,
-    QTabs
+    QScrollArea
   } from 'quasar-framework'
 
-  import SideBar from './components/Sidebar.vue'
+  import Sidebar from '@/Sidebar.vue'
+
 /*
  * Root component
  */
@@ -48,22 +49,12 @@ export default {
       QLayout,
       QToolbar,
       QToolbarTitle,
+      QTabs,
+      QRouteTab,
       QBtn,
       QIcon,
-      QRouteTab,
-      QTabs,
-      SideBar
+      QScrollArea,
+      Sidebar
     }
 }
 </script>
-
-<style lang="stylus">
-main
-  text-align center
-  margin-top 40px
-
-header
-  margin 0
-  height 10px
-  background-color $primary
-</style>
