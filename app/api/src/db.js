@@ -1,4 +1,5 @@
 const mysql  = require('mysql')
+const async = require('async')
 const config = require('../config')
 
 let state = {
@@ -22,18 +23,10 @@ exports.WRITE = 'write'
 exports.get = function (type, done) {
   var pool = state.pool
   if (!pool) return done(new Error('Missing database connection.'))
-
-  if (type === exports.WRITE) {
-    state.pool.getConnection('WRITE', function (err, connection) {
-      if (err) return done(err)
-      done(null, connection)
-    })
-  } else {
-    state.pool.getConnection('READ*', function (err, connection) {
-      if (err) return done(err)
-      done(null, connection)
-    })
-  }
+  state.pool.getConnection(function (err, connection) {
+    if (err) return done(err)
+    done(null, connection)
+  })
 }
 
 exports.fixtures = function(data) {

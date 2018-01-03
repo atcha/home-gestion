@@ -1,12 +1,13 @@
 const db = require('./db')
 
 // Fake controller
-class Store {
+class Shelving {
   static  index(req, res) {
     db.get(db.READ, function (err, connection) {
       if (err) return done('Database problem')
 
-      connection.query('SELECT * FROM store', function (err, rows) {
+      connection.query('SELECT * FROM shelving', function (err, rows) {
+        if (err) return done('Database problem')
         res.send(rows)
       })
     })
@@ -15,18 +16,19 @@ class Store {
     db.get(db.READ, function (err, connection) {
       if (err) return done('Database problem')
 
-      connection.query('SELECT * FROM store WHERE id = ?', req.params.id, function (err, rows) {
-        res.send(rows || { error: 'Cannot find store' })
+      connection.query('SELECT * FROM shelving WHERE id = ?', req.params.id, function (err, rows) {
+        if (err) return done('Database problem')
+        res.send(rows || { error: 'Cannot find shelving' })
       })
     })
   }
   static  destroy(req, res, id) {
-    var destroyed = id in stores;
-    delete stores[id];
-    res.send(destroyed ? 'destroyed' : 'Cannot find store')
+    var destroyed = id in shelvings;
+    delete shelvings[id];
+    res.send(destroyed ? 'destroyed' : 'Cannot find shelving')
   }
   static  range (req, res, a, b, format) {
-    const range = stores.slice(a, b + 1)
+    const range = shelvings.slice(a, b + 1)
     switch (format) {
       case 'json':
         res.send(range)
@@ -43,18 +45,18 @@ class Store {
 }
 
 // Ad-hoc example resource method
-module.exports.addStoreResources = function(app, path) {
-  app.get(path, Store.index)
+module.exports.addShelvingResources = function(app, path) {
+  app.get(path, Shelving.index)
   app.get(path + '/:a..:b.:format?', (req, res) => {
     var a = parseInt(req.params.a, 10)
     var b = parseInt(req.params.b, 10)
     var format = req.params.format
-    Store.range(req, res, a, b, format)
+    Shelving.range(req, res, a, b, format)
   })
-  app.get(path + '/:id', Store.show)
+  app.get(path + '/:id', Shelving.show)
   app.delete(path + '/:id', (req, res) => {
     var id = parseInt(req.params.id, 10)
-    Store.destroy(req, res, id)
+    Shelving.destroy(req, res, id)
   })
 }
 

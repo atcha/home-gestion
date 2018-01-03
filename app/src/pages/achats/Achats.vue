@@ -7,7 +7,7 @@
       <q-tab slot="title" name="confs" label="configurations" icon="build" />
 
       <q-tab-pane name="add">
-        <div class="form-purchase row sm-gutter">
+        <div class="form-purchase row sm-gutter wrap">
           <div class="col-4">
             <q-input
               float-label="Nom du produit"
@@ -32,12 +32,12 @@
               ]" />
           </div>
           <div class="col">
-            <!--<q-select-->
-              <!--float-label="Rayons"-->
-              <!--v-model="shelving"-->
-              <!--:options="shelvings"-->
-              <!--multiple="true"-->
-              <!--radio="true" />-->
+            <q-select
+              float-label="Rayons"
+              v-model="shelving"
+              :options="shelvings"
+              multiple
+              radio />
           </div>
           <div class="col">
             <q-select
@@ -45,9 +45,9 @@
               v-model="store"
               :options="stores" />
           </div>
-          <div class="col">
-            <q-btn color="primary" @click="submit">Submit</q-btn>
-          </div>
+        </div>
+        <div class="row">
+          <q-btn color="primary" @click="submit">Ajouter</q-btn>
         </div>
       </q-tab-pane>
       <q-tab-pane name="stats">Tab Three</q-tab-pane>
@@ -84,26 +84,24 @@
         store: '',
         shelving: [],
         stores: [],
-        shelvings: [
-          {
-            label: 'Salle de bain',
-            value: 'bathroom'
-          },
-          {
-            label: 'Cuisine',
-            value: 'kitchen'
-          }
-        ]
+        shelvings: []
       }
     },
     mounted () {
       this.getStores()
+      this.getShelvings()
     },
     methods: {
       getStores () {
         this.$http.get('/api/stores')
           .then((stores) => {
             this.stores = stores.body
+          })
+      },
+      getShelvings () {
+        this.$http.get('/api/shelvings')
+          .then((shelvings) => {
+            this.shelvings = shelvings.body
           })
       },
       submit () {

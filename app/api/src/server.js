@@ -51,8 +51,4 @@ export class Server {
 
     return promise
   }
-
-  getDbConnection() {
-    return this.connection
-  }
 }
