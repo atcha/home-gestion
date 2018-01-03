@@ -1,8 +1,8 @@
 // Fake records
 const stores = [
-  { name: 'monop', label: 'Monoprix' }
-  , { name: 'carrefour', label: 'Carrefour' }
-  , { name: 'leopold', labe: 'Leopold' }
+  { label: 'Monoprix', value: 'monop' },
+  { label: 'Carrefour', value: 'carrefour' },
+  { label: 'Marché de Leopold', value: 'leopold' }
 ]
 
 // Fake controller

@@ -32,12 +32,12 @@
               ]" />
           </div>
           <div class="col">
-            <q-select
-              float-label="Rayons"
-              v-model="shelving"
-              :options="shelvings"
-              multiple="true"
-              radio="true" />
+            <!--<q-select-->
+              <!--float-label="Rayons"-->
+              <!--v-model="shelving"-->
+              <!--:options="shelvings"-->
+              <!--multiple="true"-->
+              <!--radio="true" />-->
           </div>
           <div class="col">
             <q-select
@@ -102,9 +102,8 @@
     methods: {
       getStores () {
         this.$http.get('/api/stores')
-          .then(stores => {
-            console.log(stores)
-            this.stores.$set(stores.body)
+          .then((stores) => {
+            this.stores = stores.body
           })
       },
       submit () {
