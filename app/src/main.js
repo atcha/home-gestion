@@ -13,8 +13,10 @@ require(`quasar/dist/quasar.ie.${__THEME}.css`)
 import Vue from 'vue'
 import Quasar from 'quasar'
 import router from './router'
+import VueResource from 'vue-resource'
 
 Vue.config.productionTip = false
+Vue.use(VueResource)
 Vue.use(Quasar) // Install Quasar Framework
 
 if (__THEME === 'mat') {

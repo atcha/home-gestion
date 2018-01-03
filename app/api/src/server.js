@@ -26,9 +26,10 @@ export class Server {
       database : this.config.sql.database
     })
 
+
     // Define HTTP proxies to your custom API backend. See /config/index.js -> proxyTable
     // https://github.com/chimurai/http-proxy-middleware
-    Object.keys(this.config.proxyTable).forEach(function (context) {
+    Object.keys(this.config.proxyTable).forEach((context) => {
       let options = this.config.proxyTable[context]
       if (typeof options === 'string') {
         options = { target: options }

@@ -83,16 +83,7 @@
         priceWeight: '',
         store: '',
         shelving: [],
-        stores: [
-          {
-            label: 'Monoprix',
-            value: 'monop'
-          },
-          {
-            label: 'Carrefour',
-            value: 'carrefour'
-          }
-        ],
+        stores: [],
         shelvings: [
           {
             label: 'Salle de bain',
@@ -103,6 +94,21 @@
             value: 'kitchen'
           }
         ]
+      }
+    },
+    mounted () {
+      this.getStores()
+    },
+    methods: {
+      getStores () {
+        this.$http.get('/api/stores')
+          .then(stores => {
+            console.log(stores)
+            this.stores.$set(stores.body)
+          })
+      },
+      submit () {
+        console.log('ok')
       }
     }
   }
