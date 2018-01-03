@@ -3,7 +3,7 @@ require('colors')
 const path = require('path')
 const express = require('express')
 const proxyMiddleware = require('http-proxy-middleware')
-const mysql      = require('mysql')
+const db = require('./db')
 
 export class Server {
   constructor(config) {
@@ -18,13 +18,6 @@ export class Server {
       const staticsPath = path.posix.join(this.config.client.dev.publicPath, 'statics/')
       this.app.use(staticsPath, express.static('../client/statics'))
     }
-
-    this.connection = mysql.createConnection({
-      host     : this.config.sql.host,
-      user     : this.config.sql.user,
-      password : this.config.sql.password,
-      database : this.config.sql.database
-    })
 
 
     // Define HTTP proxies to your custom API backend. See /config/index.js -> proxyTable
@@ -45,7 +38,13 @@ export class Server {
           reject(err)
         }
         else {
-          resolve()
+          db.connect(function (err) {
+            if (err) {
+              reject(err)
+            } else {
+              resolve()
+            }
+          })
         }
       })
     })

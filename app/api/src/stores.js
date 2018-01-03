@@ -1,3 +1,4 @@
+const db = require('./db')
 // Fake records
 const stores = [
   { label: 'Monoprix', value: 'monop' },
@@ -8,15 +9,29 @@ const stores = [
 // Fake controller
 class Store {
   static  index(req, res) {
-    res.send(stores)
+    db.get(db.READ, function (err, connection) {
+      if (err) return done('Database problem')
+
+      connection.query('SELECT * FROM store', function (err, rows) {
+        if (err) return done(err)
+        done(null, res.send(stores))
+      })
+    })
   }
   static  show(req, res) {
-    res.send(stores[req.params.id] || { error: 'Cannot find user' })
+    db.get(db.READ, function (err, connection) {
+      if (err) return done('Database problem')
+
+      connection.query('SELECT * FROM store WHERE id = ?', req.params.id, function (err, rows) {
+        if (err) return done(err)
+        done(null, res.send(rows || { error: 'Cannot find store' }))
+      })
+    })
   }
   static  destroy(req, res, id) {
     var destroyed = id in stores;
     delete stores[id];
-    res.send(destroyed ? 'destroyed' : 'Cannot find user')
+    res.send(destroyed ? 'destroyed' : 'Cannot find store')
   }
   static  range (req, res, a, b, format) {
     const range = stores.slice(a, b + 1)
@@ -36,7 +51,7 @@ class Store {
 }
 
 // Ad-hoc example resource method
-module.exports.addStoreResources = function(app, path) {
+module.exports.addStoreResources = function(app, path, dbconnection) {
   app.get(path, Store.index)
   app.get(path + '/:a..:b.:format?', (req, res) => {
     var a = parseInt(req.params.a, 10)

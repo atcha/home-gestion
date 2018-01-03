@@ -12,13 +12,4 @@ addStoreRessources(server.app, config.apiPath + '/stores')
 
 server.run().then( () => {
   console.log(' Server listen at ' + config.port.toString().bold)
-
-  // server.getDbConnection().connect();
-  //
-  // server.getDbConnection().query('SELECT * FROM `store`', function(err, rows, fields) {
-  //   if (err) throw err;
-  //   console.log('The solution is: ', rows);
-  // });
-  //
-  // server.getDbConnection().end();
 })
