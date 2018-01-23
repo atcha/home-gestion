@@ -6,7 +6,7 @@ module.exports = (app) => {
         .get(shelves.list_all_shelves)
         .post(shelves.create_a_shelve);
 
-    app.route('/shelves/:shelvingId')
+    app.route('/shelves/:shelveId')
         .get(shelves.read_a_shelve)
         .put(shelves.update_a_shelve)
         .delete(shelves.delete_a_shelve);

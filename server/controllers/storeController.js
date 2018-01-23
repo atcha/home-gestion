@@ -11,11 +11,17 @@ exports.list_all_stores = (req, res) => {
 };
 
 exports.create_a_store = (req, res) => {
-    db.query('INSERT INTO `store` SET ?', req.body, (error, results, fields) => {
+    db.query('INSERT INTO `store` SET ?', req.body, (error, result, fields) => {
         if(error) {
             res.send(error.sqlMessage);
         } else {
-            res.json(results.insertId);
+            db.query('SELECT * FROM `store` WHERE id = ?', result.insertId, (error, results, fields) => {
+                if(error) {
+                    res.send(error);
+                } else {
+                    res.json(results);
+                }
+            });
         }
     });
 };

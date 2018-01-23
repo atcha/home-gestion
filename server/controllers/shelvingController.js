@@ -9,11 +9,18 @@ exports.list_all_shelves = (req, res) => {
 };
 
 exports.create_a_shelve = (req, res) => {
-    db.query('INSERT INTO `shelving` SET ?', req.body, (error, results, fields) => {
+    db.query('INSERT INTO `shelving` SET ?', req.body, (error, result, fields) => {
         if(error) {
             res.send(error.sqlMessage);
+        } else {
+            db.query('SELECT * FROM `shelving` WHERE id = ?', result.insertId, (error, results, fields) => {
+                if(error) {
+                    res.send(error);
+                } else {
+                    res.json(results);
+                }
+            });
         }
-        res.json(results.insertId);
     });
 };
 

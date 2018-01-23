@@ -34,8 +34,8 @@
           <div class="col">
             <q-select
               float-label="Rayons"
-              v-model="shelving"
-              :options="shelvings"
+              v-model="shelve"
+              :options="shelves"
               multiple
               radio />
           </div>
@@ -63,12 +63,12 @@
                     <div class="col-6">
                       <q-input
                         float-label="Nom du magasin"
-                        v-model="store" />
+                        v-model="store.label" />
                     </div>
                     <div class="col-6">
                       <q-input
                         float-label="Valeur du magasin"
-                        v-model="store" />
+                        v-model="store.value" />
                     </div>
                   </div>
                 <div class="row">
@@ -107,9 +107,60 @@
               </q-card-main>
             </q-card>
           </q-collapsible>
-          <q-collapsible icon="list" label="Rayons">
+          <q-collapsible icon="list" label="Rayons" :sublabel="makeSubLabel(shelves.length, 'rayon')">
             <div>
-              Content
+              <q-card>
+                <q-card-title>
+                  Ajouter un Rayon de magasin
+                </q-card-title>
+                <q-card-main>
+                  <div class="form-purchase row sm-gutter">
+                    <div class="col-6">
+                      <q-input
+                        float-label="Nom du rayon (ex : salle de bain)"
+                        v-model="shelve.label" />
+                    </div>
+                    <div class="col-6">
+                      <q-input
+                        float-label="Valeur du rayon"
+                        v-model="shelve.value" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <q-btn color="primary" @click="submitShelve">Ajouter</q-btn>
+                  </div>
+                </q-card-main>
+              </q-card>
+              <q-card>
+                <q-card-title>
+                  Liste des rayons
+                </q-card-title>
+                <q-card-main>
+                  <q-data-table
+                    :data="shelves"
+                    :config="dataStoreConfig"
+                    :columns="dataStoreColumns"
+                  >
+                    <!-- Custom renderer for "message" column -->
+                    <template slot="col-shelvelabel" slot-scope="cell">
+                      <span class="light-paragraph">{{cell.data}}</span>
+                    </template>
+                    <!-- Custom renderer for "source" column -->
+                    <template slot="col-shelvevalue" slot-scope="cell">
+                      <span class="label text-white bg-negative">{{cell.data}}</span>
+                    </template>
+                    <!-- Custom renderer when user selected one or more rows -->
+                    <template slot="selection" slot-scope="selection">
+                      <q-btn color="primary" @click="modifyShelve(selection)">
+                        <i>edit</i>
+                      </q-btn>
+                      <q-btn color="primary" @click="deleteShelve(selection)">
+                        <i>delete</i>
+                      </q-btn>
+                    </template>
+                  </q-data-table>
+                </q-card-main>
+              </q-card>
             </div>
           </q-collapsible>
         </q-list>
@@ -155,10 +206,16 @@
         name: '',
         price: '',
         priceWeight: '',
-        store: '',
-        shelving: [],
+        store: {
+          label: '',
+          value: ''
+        },
+        shelve: {
+          label: '',
+          value: ''
+        },
         stores: [],
-        shelvings: [],
+        shelves: [],
         dataStoreConfig: {
           title: 'Liste des magasins enregistrés',
           refresh: true,
@@ -213,26 +270,35 @@
     },
     mounted () {
       this.getStores()
-      this.getShelvings()
+      this.getShelves()
     },
     methods: {
       getStores () {
         this.$http.get('/api/stores')
           .then((stores) => {
             this.stores = stores.body
-            console.log(this.stores)
           })
       },
-      getShelvings () {
+      getShelves () {
         this.$http.get('/api/shelves')
-          .then((shelvings) => {
-            this.shelvings = shelvings.body
+          .then((shelves) => {
+            this.shelves = shelves.body
+          })
+      },
+      submitShelve () {
+        this.$http.post('/api/shelves', this.shelve)
+          .then((shelve) => {
+            this.shelves.push(shelve.body[0])
+          })
+      },
+      submitStore () {
+        this.$http.post('/api/stores', this.store)
+          .then((store) => {
+            this.stores.push(store.body[0])
+            console.log(store.body, this.stores)
           })
       },
       submitPurchase () {
-        console.log('ok')
-      },
-      submitStore () {
         console.log('ok')
       },
       makeSubLabel (number, text) {
