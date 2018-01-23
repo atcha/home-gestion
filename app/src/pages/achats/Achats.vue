@@ -87,15 +87,15 @@
                     :columns="dataStoreColumns"
                   >
                     <!-- Custom renderer for "message" column -->
-                    <template slot="col-storelabel" scope="cell">
+                    <template slot="col-storelabel" slot-scope="cell">
                       <span class="light-paragraph">{{cell.data}}</span>
                     </template>
                     <!-- Custom renderer for "source" column -->
-                    <template slot="col-storevalue" scope="cell">
+                    <template slot="col-storevalue" slot-scope="cell">
                       <span class="label text-white bg-negative">{{cell.data}}</span>
                     </template>
                     <!-- Custom renderer when user selected one or more rows -->
-                    <template slot="selection" scope="selection">
+                    <template slot="selection" slot-scope="selection">
                       <q-btn color="primary" @click="modifyStore(selection)">
                         <i>edit</i>
                       </q-btn>
@@ -220,10 +220,11 @@
         this.$http.get('/api/stores')
           .then((stores) => {
             this.stores = stores.body
+            console.log(this.stores)
           })
       },
       getShelvings () {
-        this.$http.get('/api/shelvings')
+        this.$http.get('/api/shelves')
           .then((shelvings) => {
             this.shelvings = shelvings.body
           })

@@ -7,10 +7,10 @@ let express = require('express'),
     bodyParser = require('body-parser');
 
 // Models
-let product = require('./models/product'),
-    shelving = require('./models/shelving'),
-    store = require('./models/store'),
-    purchase = require('./models/purchase');
+// let product = require('./models/product'),
+//     shelving = require('./models/shelving'),
+//     store = require('./models/store'),
+//     purchase = require('./models/purchase');
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
