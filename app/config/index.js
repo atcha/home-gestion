@@ -46,7 +46,7 @@ module.exports = {
     // https://github.com/chimurai/http-proxy-middleware
     proxyTable: {
       '/api': {
-        target: 'http://localhost:8181',
+        target: 'http://localhost:3000',
         changeOrigin: true
       }
     }
