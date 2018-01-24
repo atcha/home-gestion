@@ -78,14 +78,16 @@
                     <div class="col-6">
                       <q-input
                         float-label="Nom du magasin"
-                        v-model="store.label" />
+                        v-model="store.label"
+                        ref="storeLabel"
+                      />
                     </div>
                     <div class="col-6">
                       <q-input
                         float-label="Valeur du magasin"
                         v-model="store.value" />
-                    </div>
-                    <input type="hidden" v-model="idEditedStore" v-if="editStoreMode">
+                </div>
+                <input type="hidden" v-model="idEditedStore" v-if="editStoreMode">
                   </div>
                 <div class="row">
                   <q-btn color="primary" @click="submitStore('add')" v-if="addStoreMode">Ajouter</q-btn>
@@ -142,9 +144,11 @@
                         float-label="Valeur du rayon"
                         v-model="shelve.value" />
                     </div>
+                    <input type="hidden" v-model="idEditedShelve" v-if="editShelveMode">
                   </div>
                   <div class="row">
-                    <q-btn color="primary" @click="submitShelve">Ajouter</q-btn>
+                    <q-btn color="primary" @click="submitShelve('add')" v-if="addShelveMode">Ajouter</q-btn>
+                    <q-btn color="primary" @click="submitShelve('edit')" v-if="editShelveMode">Modifier</q-btn>
                   </div>
                 </q-card-main>
               </q-card>
@@ -238,6 +242,7 @@
           value: ''
         },
         shelves: [],
+        idEditedShelve: null,
         canAddPurchase: false,
         displayAddPurchaseAlert: false,
         addStoreMode: true,
@@ -343,13 +348,35 @@
         this.$http.get('/api/shelves')
           .then((shelves) => {
             this.shelves = shelves.body
+            console.log(this.shelves)
           })
       },
-      submitShelve () {
-        this.$http.post('/api/shelves', this.shelve)
-          .then((shelve) => {
-            this.shelves.push(shelve.body[0])
+      submitShelve (mode) {
+        if (mode === 'add') {
+          this.$http.post('/api/shelves', this.shelve)
+            .then((shelve) => {
+              this.shelves.push(shelve.body[0])
+            })
+        }
+        else {
+          this.$http.put('/api/shelves/' + this.idEditedShelve, this.shelve)
+            .then((shelve) => {
+              this.getShelves()
+            })
+        }
+      },
+      deleteShelve (selected) {
+        this.$http.delete('/api/shelves/' + selected.rows[0].data.id)
+          .then((message) => {
+            this.getShelves()
           })
+      },
+      modifyShelve (selected) {
+        this.editShelveMode = true
+        this.addShelveMode = false
+        this.shelve.label = selected.rows[0].data.label
+        this.shelve.value = selected.rows[0].data.value
+        this.idEditedShelve = selected.rows[0].data.id
       },
       submitPurchase () {
         if (!this.canAddPurchase) {
@@ -368,12 +395,6 @@
             subLabel = number + ' ' + text + 's'
         }
         return subLabel
-      },
-      deleteShelve (selected) {
-        this.$http.delete('/api/shelves/' + selected.rows[0].data.id)
-          .then((message) => {
-            this.getShelves()
-          })
       }
     }
   }
