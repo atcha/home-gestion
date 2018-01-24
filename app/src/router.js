@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 
 import Home from '@/Home.vue'
 import Achats from './pages/achats/Achats.vue'
+import AchatsConf from './pages/achats/AchatsConf.vue'
+import AchatsStats from './pages/achats/AchatsStats.vue'
 
 Vue.use(VueRouter)
 
@@ -35,7 +37,17 @@ export default new VueRouter({
     },
     {
       path: '/achats',
-      component: Achats
+      component: Achats,
+      children: [
+        {
+          path: 'stats',
+          component: AchatsStats
+        },
+        {
+          path: 'config',
+          component: AchatsConf
+        }
+      ]
     }
   ]
 })
