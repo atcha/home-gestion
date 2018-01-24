@@ -48,7 +48,7 @@ exports.update_a_store = (req, res) => {
 };
 
 
-exports.delete_a_store = function(req, res) {
+exports.delete_a_store = (req, res) => {
     db.query('DELETE FROM `store` WHERE id = ?', req.params.storeId, (error, results, fields) => {
         if (error) {
             res.send(error);

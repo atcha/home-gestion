@@ -7,47 +7,62 @@
       <q-tab slot="title" name="confs" label="configurations" icon="build" />
 
       <q-tab-pane name="add">
-        <div class="form-purchase row sm-gutter">
-          <div class="col-4">
-            <q-input
-              float-label="Nom du produit"
-              v-model="name" />
+        <div class="container-form">
+          <q-alert
+            color="warning"
+            icon="warning"
+            dismissible
+            enter="fadeIn"
+            leave="fadeOut"
+            v-model="displayAddPurchaseAlert"
+          >
+            Avant d'ajouter un nouvel achat, vous devez renseigner des rayons et des magasins au préalable.<br />
+            Rendez-vous dans l'onglet configurations.
+          </q-alert>
+          <div class="form-purchase row sm-gutter">
+            <div class="col-4">
+              <q-input
+                float-label="Nom du produit"
+                v-model="name" />
+            </div>
+            <div class="col-2">
+              <q-input
+                float-label="Prix du produit"
+                v-model="price" :after="[
+                  {
+                    icon: 'euro symbol'
+                  }
+                ]" />
+            </div>
+            <div class="col">
+              <q-input
+                float-label="Prix au kg"
+                v-model="priceWeight" :after="[
+                  {
+                    icon: 'euro symbol'
+                  }
+                ]" />
+            </div>
+            <div class="col">
+              <q-select
+                float-label="Rayons"
+                v-model="shelve"
+                :options="shelves"
+                multiple
+                radio
+              />
+            </div>
+            <div class="col">
+              <q-select
+                float-label="Magasins"
+                v-model="store"
+                :options="stores"
+              />
+            </div>
           </div>
-          <div class="col-2">
-            <q-input
-              float-label="Prix du produit"
-              v-model="price" :after="[
-                {
-                  icon: 'euro symbol'
-                }
-              ]" />
+          <div class="row">
+            <q-btn color="primary" @click="submitPurchase">Ajouter</q-btn>
           </div>
-          <div class="col">
-            <q-input
-              float-label="Prix au kg"
-              v-model="priceWeight" :after="[
-                {
-                  icon: 'euro symbol'
-                }
-              ]" />
-          </div>
-          <div class="col">
-            <q-select
-              float-label="Rayons"
-              v-model="shelve"
-              :options="shelves"
-              multiple
-              radio />
-          </div>
-          <div class="col">
-            <q-select
-              float-label="Magasins"
-              v-model="store"
-              :options="stores" />
-          </div>
-        </div>
-        <div class="row">
-          <q-btn color="primary" @click="submitPurchase">Ajouter</q-btn>
         </div>
       </q-tab-pane>
       <q-tab-pane name="stats">Tab Three</q-tab-pane>
@@ -70,9 +85,11 @@
                         float-label="Valeur du magasin"
                         v-model="store.value" />
                     </div>
+                    <input type="hidden" v-model="idEditedStore" v-if="editStoreMode">
                   </div>
                 <div class="row">
-                  <q-btn color="primary" @click="submitStore">Ajouter</q-btn>
+                  <q-btn color="primary" @click="submitStore('add')" v-if="addStoreMode">Ajouter</q-btn>
+                  <q-btn color="primary" @click="submitStore('edit')" v-if="editStoreMode">Modifier</q-btn>
                 </div>
               </q-card-main>
             </q-card>
@@ -182,7 +199,9 @@
     QCard,
     QCardTitle,
     QCardMain,
-    QDataTable
+    QDataTable,
+    Alert,
+    QAlert
   } from 'quasar-framework'
 
   export default {
@@ -199,7 +218,9 @@
       QCard,
       QCardTitle,
       QCardMain,
-      QDataTable
+      QDataTable,
+      Alert,
+      QAlert
     },
     data () {
       return {
@@ -210,12 +231,19 @@
           label: '',
           value: ''
         },
+        stores: [],
+        idEditedStore: null,
         shelve: {
           label: '',
           value: ''
         },
-        stores: [],
         shelves: [],
+        canAddPurchase: false,
+        displayAddPurchaseAlert: false,
+        addStoreMode: true,
+        editStoreMode: false,
+        addShelveMode: true,
+        editShelveMode: false,
         dataStoreConfig: {
           title: 'Liste des magasins enregistrés',
           refresh: true,
@@ -248,7 +276,8 @@
             },
             clear: 'Désélectionner',
             search: 'Rechercher',
-            all: 'Tout'
+            all: 'Tout',
+            delete: 'supprimer'
           }
         },
         dataStoreColumns: [
@@ -269,14 +298,45 @@
       }
     },
     mounted () {
-      this.getStores()
-      this.getShelves()
+      Promise.all([this.getStores(), this.getShelves()])
+        .then(() => {
+          if (this.stores.length > 0 && this.shelves.length > 0) {
+            this.canAddPurchase = true
+          }
+        })
     },
     methods: {
       getStores () {
         this.$http.get('/api/stores')
           .then((stores) => {
             this.stores = stores.body
+          })
+      },
+      submitStore (mode) {
+        if (mode === 'add') {
+          this.$http.post('/api/stores', this.store)
+            .then((store) => {
+              this.stores.push(store.body[0])
+            })
+        }
+        else {
+          this.$http.put('/api/stores/' + this.idEditedStore, this.store)
+            .then((store) => {
+              this.getStores()
+            })
+        }
+      },
+      modifyStore (selected) {
+        this.editStoreMode = true
+        this.addStoreMode = false
+        this.store.label = selected.rows[0].data.label
+        this.store.value = selected.rows[0].data.value
+        this.idEditedStore = selected.rows[0].data.id
+      },
+      deleteStore (selected) {
+        this.$http.delete('/api/stores/' + selected.rows[0].data.id)
+          .then((message) => {
+            this.getStores()
           })
       },
       getShelves () {
@@ -291,15 +351,10 @@
             this.shelves.push(shelve.body[0])
           })
       },
-      submitStore () {
-        this.$http.post('/api/stores', this.store)
-          .then((store) => {
-            this.stores.push(store.body[0])
-            console.log(store.body, this.stores)
-          })
-      },
       submitPurchase () {
-        console.log('ok')
+        if (!this.canAddPurchase) {
+          this.displayAddPurchaseAlert = true
+        }
       },
       makeSubLabel (number, text) {
         let subLabel = ''
@@ -314,11 +369,11 @@
         }
         return subLabel
       },
-      modifyStore (selected) {
-        console.log(selected)
-      },
-      deleteStore (selected) {
-        console.log(selected)
+      deleteShelve (selected) {
+        this.$http.delete('/api/shelves/' + selected.rows[0].data.id)
+          .then((message) => {
+            this.getShelves()
+          })
       }
     }
   }

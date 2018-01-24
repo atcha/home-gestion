@@ -1,18 +1,22 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "home gestion server",
+  "description": "Server side for home-gestion",
   "main": "index.js",
   "dependencies": {
-    "ejs": "^2.5.7",
+    "body-parser": "^1.18.2",
     "express": "^4.16.2",
-    "mysql": "^2.15.0",
-    "redis": "^2.8.0"
+    "fs": "0.0.1-security",
+    "http": "0.0.0",
+    "mysql": "^2.15.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^1.14.11"
+  },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "debug": "node %NODE_DEBUG_OPTION% server.js"
   },
-  "author": "",
+  "author": "npm <devintranet@mutuelledepoitiers.fr>",
   "license": "ISC"
 }
