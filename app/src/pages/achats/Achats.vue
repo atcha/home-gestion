@@ -319,6 +319,7 @@
       },
       submitStore (mode) {
         if (mode === 'add') {
+          // TODO: Gestion d'erreur si champs vide (voir vuelidate)
           this.$http.post('/api/stores', this.store)
             .then((store) => {
               this.stores.push(store.body[0])
@@ -337,6 +338,7 @@
         this.store.label = selected.rows[0].data.label
         this.store.value = selected.rows[0].data.value
         this.idEditedStore = selected.rows[0].data.id
+        // TODO: slide to input
       },
       deleteStore (selected) {
         this.$http.delete('/api/stores/' + selected.rows[0].data.id)
@@ -377,6 +379,7 @@
         this.shelve.label = selected.rows[0].data.label
         this.shelve.value = selected.rows[0].data.value
         this.idEditedShelve = selected.rows[0].data.id
+        // TODO: slide to input
       },
       submitPurchase () {
         if (!this.canAddPurchase) {
