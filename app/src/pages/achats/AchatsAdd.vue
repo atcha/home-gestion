@@ -1,20 +1,8 @@
 <template>
-  <div class="achats-container container">
-    <h4>Gestion de vos achats</h4>
-    <q-tabs>
-      <q-tab default slot="title" name="add" label="Ajouts" icon="add" />
-      <q-tab slot="title" name="stats" label="statistiques" icon="pie chart" />
-      <!--<q-tab slot="title" name="confs" label="configurations" icon="build" />-->
-      <q-route-tab
-        icon="build"
-        to="/achats/config"
-        label="configurations"
-        exact
-        slot="title"
-      />
-
-      <q-tab-pane name="add">
-        <div class="container-form">
+  <q-list separator>
+    <q-list-header>Ajouter un achat</q-list-header>
+    <q-item>
+      <div class="container-form">
           <q-alert
             color="warning"
             icon="warning"
@@ -71,22 +59,24 @@
             <q-btn color="primary" @click="submitPurchase">Ajouter</q-btn>
           </div>
         </div>
-      </q-tab-pane>
-      <q-tab-pane name="stats">Tab Three</q-tab-pane>
-    </q-tabs>
-  </div>
+    </q-item>
+    <q-item-separator />
+    <q-list-header>Liste des achats</q-list-header>
+    <q-item>
+      Liste
+    </q-item>
+  </q-list>
 </template>
 
 <script>
   import {
-    QTabs,
-    QTab,
-    QTabPane,
-    QRouteTab,
     QInput,
     QSelect,
     QBtn,
     QList,
+    QListHeader,
+    QItem,
+    QItemSeparator,
     QCollapsible,
     QCard,
     QCardTitle,
@@ -99,16 +89,15 @@
   } from 'quasar-framework'
 
   export default {
-    name: 'achats',
+    name: 'achatsadd',
     components: {
-      QTabs,
-      QTab,
-      QTabPane,
-      QRouteTab,
       QInput,
       QSelect,
       QBtn,
       QList,
+      QListHeader,
+      QItem,
+      QItemSeparator,
       QCollapsible,
       QCard,
       QCardTitle,

@@ -6,7 +6,7 @@
       <q-item-side icon="home" />
       <q-item-main label="Accueil" />
     </q-side-link>
-    <q-side-link item to="/achats">
+    <q-side-link item to="/achats/add">
       <q-item-side icon="shopping basket" />
       <q-item-main label="Gestion des achats" />
     </q-side-link>

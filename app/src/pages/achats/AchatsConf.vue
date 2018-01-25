@@ -1,11 +1,10 @@
 <template>
-      <q-list separator>
-        <q-collapsible icon="store" label="Magasins" :sublabel="makeSubLabel(stores.length, 'magasin')" >
-          <q-card>
-            <q-card-title>
-              Ajouter un magasin
-            </q-card-title>
-            <q-card-main>
+  <q-list class="purchase-conf-tab" separator>
+    <q-list-header>Configuration des magasins et rayons</q-list-header>
+    <q-collapsible icon="store" label="Magasins" :sublabel="makeSubLabel(stores.length, 'magasin')" >
+          <q-list>
+            <q-list-header>Ajouter un magasin</q-list-header>
+            <q-item>
               <div class="form-purchase row sm-gutter">
                 <div class="col-6">
                   <q-input
@@ -32,13 +31,10 @@
                   <q-btn color="secondary" @click="eraseConfig('store')">Effacer</q-btn>
                 </div>
               </div>
-            </q-card-main>
-          </q-card>
-          <q-card>
-            <q-card-title>
-              Liste des magasins
-            </q-card-title>
-            <q-card-main>
+            </q-item>
+            <q-list-header>Liste des magasins</q-list-header>
+            <q-item-separator />
+            <q-item>
               <q-data-table
                 :data="stores"
                 :config="dataStoreConfig"
@@ -62,16 +58,13 @@
                   </q-btn>
                 </template>
               </q-data-table>
-            </q-card-main>
-          </q-card>
+            </q-item>
+          </q-list>
         </q-collapsible>
-        <q-collapsible icon="list" label="Rayons" :sublabel="makeSubLabel(shelves.length, 'rayon')">
-          <div>
-            <q-card>
-              <q-card-title>
-                Ajouter un Rayon de magasin
-              </q-card-title>
-              <q-card-main>
+    <q-collapsible icon="list" label="Rayons" :sublabel="makeSubLabel(shelves.length, 'rayon')">
+            <q-list>
+              <q-list-header>Ajouter un Rayon de magasin</q-list-header>
+              <q-item>
                 <div class="form-purchase row sm-gutter">
                   <div class="col-6">
                     <q-input
@@ -96,13 +89,10 @@
                     <q-btn color="secondary" @click="eraseConfig('shelve')" v-if="shelveMode === 'edit'">Effacer</q-btn>
                   </div>
                 </div>
-              </q-card-main>
-            </q-card>
-            <q-card>
-              <q-card-title>
-                Liste des rayons
-              </q-card-title>
-              <q-card-main>
+              </q-item>
+              <q-item-separator />
+              <q-list-header>Liste des rayons</q-list-header>
+              <q-item>
                 <q-data-table
                   :data="shelves"
                   :config="dataStoreConfig"
@@ -126,40 +116,42 @@
                     </q-btn>
                   </template>
                 </q-data-table>
-              </q-card-main>
-            </q-card>
-          </div>
+              </q-item>
+            </q-list>
         </q-collapsible>
-      </q-list>
+  </q-list>
 </template>
 
 <script>
 import {
+  QTabPane,
   QInput,
   QSelect,
   QBtn,
   QList,
+  QListHeader,
+  QItem,
+  QItemSeparator,
   QCollapsible,
-  QCard,
-  QCardTitle,
-  QCardMain,
   QDataTable,
   Alert,
   QAlert,
   Dialog,
   Toast
 } from 'quasar-framework'
+
 export default {
   name: 'achatsconf',
   components: {
+    QTabPane,
     QInput,
     QSelect,
     QBtn,
     QList,
+    QListHeader,
+    QItem,
+    QItemSeparator,
     QCollapsible,
-    QCard,
-    QCardTitle,
-    QCardMain,
     QDataTable,
     Alert,
     QAlert,
@@ -382,5 +374,6 @@ export default {
 }
 </script>
 
-<style>
+<style lang="stylus">
+  @import './achats-conf.styl';
 </style>

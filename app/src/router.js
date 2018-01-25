@@ -1,21 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import Home from '@/Home.vue'
-import Achats from './pages/achats/Achats.vue'
-import AchatsConf from './pages/achats/AchatsConf.vue'
-import AchatsStats from './pages/achats/AchatsStats.vue'
-
 Vue.use(VueRouter)
 
-/*
- * Uncomment this section and use "load()" if you want
- * to lazy load routes.
 function load (component) {
-  // '@' is aliased to src/components
-  return () => import(`@/${component}.vue`)
+  return () => import(`./pages/${component}.vue`)
 }
-*/
 
 export default new VueRouter({
   /*
@@ -31,22 +21,14 @@ export default new VueRouter({
    */
 
   routes: [
-    {
-      path: '/',
-      component: Home
-    },
+    { path: '/', component: load('Home') },
     {
       path: '/achats',
-      component: Achats,
+      component: load('Achats'),
       children: [
-        {
-          path: 'stats',
-          component: AchatsStats
-        },
-        {
-          path: 'config',
-          component: AchatsConf
-        }
+        { path: 'add', component: load('achats/AchatsAdd') },
+        { path: 'stats', component: load('achats/AchatsStats') },
+        { path: 'config', component: load('achats/AchatsConf') }
       ]
     }
   ]
