@@ -1,5 +1,3 @@
-
-
 // server
 let express = require('express'),
     app = express(),
@@ -16,9 +14,9 @@ let express = require('express'),
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// let purchasesRoutes = require('./routes/purchasesRoutes'),
 let storesRoutes = require('./routes/storeRoutes'),
-    shelvingRoutes = require('./routes/shelvingRoutes');
+    shelvingRoutes = require('./routes/shelvingRoutes'),
+    purchasesRoutes = require('./routes/purchasesRoutes');
 
 // purchasesRoutes(app);
 storesRoutes(app);

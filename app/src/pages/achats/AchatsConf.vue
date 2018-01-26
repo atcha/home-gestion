@@ -176,9 +176,9 @@ export default {
       shelveMode: 'add',
       dataStoreConfig: {
         title: 'Liste des magasins enregistrés',
-        refresh: true,
+        refresh: false,
         noHeader: false,
-        columnPicker: true,
+        columnPicker: false,
         bodyStyle: {
           maxHeight: '500px'
         },

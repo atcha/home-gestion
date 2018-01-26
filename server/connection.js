@@ -10,7 +10,11 @@ let pool = mysql.createPool({
 });
 
 pool.getConnection((err, connection) => {
-    console.log('connected');
+    if(!err) {
+        console.log('connected');
+    } else {
+        console.log(err);
+    }
 });
 
 pool.on('error', function(err) {
