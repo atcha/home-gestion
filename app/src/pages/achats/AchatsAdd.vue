@@ -15,57 +15,66 @@
       </q-alert>
       <div class="container-form">
           <div class="form-purchase row sm-gutter">
+            <div class="col-6">
+              <q-field :count="150">
+                <q-input type="text" float-label="Nom du produit" v-model="terms">
+                  <q-autocomplete :min-characters="3" @search="searchProduct" @selected="selected"/>
+                </q-input>
+              </q-field>
+            </div>
             <div class="col-3">
-              <q-input
-                float-label="Nom du produit"
-                v-model="product">
-                <q-autocomplete
-                  @search="searchProduct"
-                  :min-characters="3"
-                  @selected="selected"
+              <q-field>
+                <q-input
+                  type="text"
+                  float-label="Prix du produit"
+                  v-model="purchase.price" :after="[
+                    {
+                      icon: 'euro symbol'
+                    }
+                  ]" />
+              </q-field>
+            </div>
+            <div class="col-3">
+              <q-field>
+                <q-input
+                  type="text"
+                  float-label="Prix au kg"
+                  v-model="purchase.weightPrice" :after="[
+                    {
+                      icon: 'euro symbol'
+                    }
+                  ]" />
+              </q-field>
+            </div>
+            <div class="col-4">
+              <q-field icon="reorder">
+                <q-select
+                  stack-label="Rayons"
+                  v-model="shelve"
+                  :options="shelves"
+                  multiple
+                  radio
                 />
-              </q-input>
+              </q-field>
             </div>
-            <div class="col-2">
-              <q-input
-                float-label="Prix du produit"
-                v-model="purchase.price" :after="[
-                  {
-                    icon: 'euro symbol'
-                  }
-                ]" />
+            <div class="col-4">
+              <q-field icon="store">
+                <q-select
+                  stack-label="Magasins"
+                  v-model="store"
+                  :options="stores"
+                />
+              </q-field>
             </div>
-            <div class="col-2">
-              <q-input
-                float-label="Prix au kg"
-                v-model="purchase.weightPrice" :after="[
-                  {
-                    icon: 'euro symbol'
-                  }
-                ]" />
-            </div>
-            <div class="col">
-              <q-select
-                stack-label="Rayons"
-                v-model="shelve"
-                :options="shelves"
-                multiple
-                radio
-              />
-            </div>
-            <div class="col">
-              <q-select
-                stack-label="Magasins"
-                v-model="store"
-                :options="stores"
-              />
-            </div>
-            <div class="col-2">
-              <q-input
-                stack-label="Date d'achat"
-                v-model="purchase.date"
-                type="date"
-              />
+            <div class="col-4">
+              <q-field icon="date range">
+                <q-datetime
+                  v-model="purchase.date"
+                  type="date"
+                  float-label="Date d'achat"
+                  format="DD-MM-YYYY"
+                />
+              </q-field>
             </div>
           </div>
         </div>
@@ -97,7 +106,9 @@
 
 <script>
   import {
+    QField,
     QInput,
+    QDatetime,
     QAutocomplete,
     QSelect,
     QBtn,
@@ -120,7 +131,9 @@
   export default {
     name: 'achatsadd',
     components: {
+      QField,
       QInput,
+      QDatetime,
       QAutocomplete,
       QSelect,
       QBtn,
@@ -158,7 +171,7 @@
           storeLabel: '',
           date: ''
         },
-        product: '',
+        terms: '',
         purchases: [],
         purchasesData: [],
         products: [],
@@ -259,7 +272,7 @@
     },
     mounted () {
       Promise.all([this.getStores(), this.getShelves()])
-        .then((results) => {
+        .then(() => {
           if (this.stores.length > 0 && this.shelves.length > 0) {
             this.canAddPurchase = true
             this.getPurchases()
@@ -286,7 +299,6 @@
         this.$http.get('/api/products')
           .then((products) => {
             this.products = products.body
-            console.log(this.products)
           })
       },
       getPurchases () {
@@ -303,10 +315,8 @@
 
         }
       },
-      searchProduct (product, done) {
-        setTimeout(() => {
-          done(filter(product, {field: 'label', list: this.products}))
-        }, 500)
+      searchProduct (terms, done) {
+        done(filter(terms, {field: 'label', list: this.products}))
       },
       selected (item) {
         Toast.create(`Selected suggestion "${item.label}"`)
