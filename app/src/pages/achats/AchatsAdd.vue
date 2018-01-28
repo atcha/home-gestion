@@ -18,7 +18,13 @@
             <div class="col-3">
               <q-input
                 float-label="Nom du produit"
-                v-model="purchase.name" />
+                v-model="product">
+                <q-autocomplete
+                  @search="searchProduct"
+                  :min-characters="3"
+                  @selected="selected"
+                />
+              </q-input>
             </div>
             <div class="col-2">
               <q-input
@@ -75,14 +81,6 @@
         :config="dataPurchaseConfig"
         :columns="dataPurchaseColumns"
       >
-        <!-- Custom renderer for "message" column -->
-        <template slot="col-purchaselabel" slot-scope="cell">
-          <span class="light-paragraph">{{cell.data}}</span>
-        </template>
-        <!-- Custom renderer for "source" column -->
-        <template slot="col-purchasename" slot-scope="cell">
-          <span class="label text-white bg-negative">{{cell.data}}</span>
-        </template>
         <!-- Custom renderer when user selected one or more rows -->
         <template slot="selection" slot-scope="selection">
           <q-btn color="primary" @click="modifyPurchase(selection)">
@@ -100,6 +98,7 @@
 <script>
   import {
     QInput,
+    QAutocomplete,
     QSelect,
     QBtn,
     QList,
@@ -114,13 +113,15 @@
     Alert,
     QAlert,
     Dialog,
-    Toast
+    Toast,
+    filter
   } from 'quasar-framework'
 
   export default {
     name: 'achatsadd',
     components: {
       QInput,
+      QAutocomplete,
       QSelect,
       QBtn,
       QList,
@@ -151,14 +152,16 @@
         },
         shelves: [],
         purchase: {
-          name: '',
           price: '',
           weightPrice: '',
           shelveLabel: '',
           storeLabel: '',
           date: ''
         },
+        product: '',
         purchases: [],
+        purchasesData: [],
+        products: [],
         price: '',
         priceWeight: '',
         canAddPurchase: false,
@@ -201,6 +204,11 @@
         },
         dataPurchaseColumns: [
           {
+            label: 'Id',
+            field: 'id',
+            width: '20px'
+          },
+          {
             label: 'Nom du produit',
             field: 'name',
             width: '140px',
@@ -211,13 +219,19 @@
             label: 'Prix unitaire',
             field: 'price',
             filter: true,
-            width: '70px'
+            width: '70px',
+            format (value) {
+              return value + ' &euro;'
+            }
           },
           {
             label: 'Prix au kg',
             field: 'weightPrice',
             filter: true,
-            width: '70px'
+            width: '70px',
+            format (value) {
+              return value + ' &euro;'
+            }
           },
           {
             label: 'Rayon',
@@ -233,33 +247,46 @@
           },
           {
             label: 'Date d\'achat',
-            field: 'date',
+            field: 'purchase_date',
             filter: true,
-            width: '70px'
+            width: '70px',
+            format (value) {
+              return new Date(value).toLocaleDateString()
+            }
           }
         ]
       }
     },
     mounted () {
       Promise.all([this.getStores(), this.getShelves()])
-        .then(() => {
+        .then((results) => {
           if (this.stores.length > 0 && this.shelves.length > 0) {
             this.canAddPurchase = true
+            this.getPurchases()
           }
         })
-      this.getPurchases()
+      this.getProducts()
     },
     methods: {
       getStores () {
-        this.$http.get('/api/stores')
+        return this.$http.get('/api/stores')
           .then((stores) => {
             this.stores = stores.body
+            return this.stores
           })
       },
       getShelves () {
-        this.$http.get('/api/shelves')
+        return this.$http.get('/api/shelves')
           .then((shelves) => {
             this.shelves = shelves.body
+            return this.shelves
+          })
+      },
+      getProducts () {
+        this.$http.get('/api/products')
+          .then((products) => {
+            this.products = products.body
+            console.log(this.products)
           })
       },
       getPurchases () {
@@ -272,6 +299,17 @@
         if (!this.canAddPurchase) {
           this.displayAddPurchaseAlert = true
         }
+        else {
+
+        }
+      },
+      searchProduct (product, done) {
+        setTimeout(() => {
+          done(filter(product, {field: 'label', list: this.products}))
+        }, 500)
+      },
+      selected (item) {
+        Toast.create(`Selected suggestion "${item.label}"`)
       }
     }
   }

@@ -28,22 +28,13 @@
 </template>
 
 <script>
-  import {
-    QLayout,
-    QToolbar,
-    QToolbarTitle,
-    QTabs,
-    QRouteTab,
-    QBtn,
-    QIcon,
-    QScrollArea
-  } from 'quasar-framework'
+  import {QBtn, QIcon, QLayout, QRouteTab, QScrollArea, QTabs, QToolbar, QToolbarTitle} from 'quasar-framework'
 
   import Sidebar from '@/Sidebar.vue'
 
-/*
- * Root component
- */
+  /*
+   * Root component
+   */
 export default {
     components: {
       QLayout,

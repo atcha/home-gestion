@@ -1,8 +1,17 @@
-let db = require('../connection'),
-    store = require('');
+let db = require('../connection');
 
 exports.list_all_purchases = (req, res) => {
-    db.query('SELECT * FROM `store`', (error, results, fields) => {
+    db.query('SELECT purchase.id, ' +
+        'product.label AS name, ' +
+        'purchase.price, ' +
+        'purchase.weight_price AS weightPrice, ' +
+        'shelving.label AS shelveLabel, ' +
+        'store.label AS storeLabel, ' +
+        'purchase.purchase_date\n' +
+        'FROM `purchase`\n' +
+        'INNER JOIN product ON product.id = purchase.id_product\n' +
+        'INNER JOIN store ON store.id = purchase.id_store\n' +
+        'INNER JOIN shelving ON shelving.id = product.id_shelving', (error, results, fields) => {
         if(error) {
             res.send(error);
         } else {
@@ -28,7 +37,7 @@ exports.create_a_purchase = (req, res) => {
 };
 
 exports.read_a_purchase = (req, res) => {
-    db.query('SELECT * FROM `store` WHERE id = ?', req.params.storeId, (error, results, fields) => {
+    db.query('SELECT * FROM `purchase` WHERE id = ?', req.params.storeId, (error, results, fields) => {
         if(error) {
             res.send(error);
         } else {

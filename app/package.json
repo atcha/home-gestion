@@ -2,7 +2,7 @@
   "name": "home-gestion",
   "version": "0.0.1",
   "description": "A home managing app",
-  "author": "Atcha",
+  "author": "Atcha <francois.cornuaud@gmail.com>",
   "scripts": {
     "clean": "node build/script.clean.js",
     "dev": "node build/script.dev.js",

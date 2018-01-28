@@ -17,6 +17,6 @@
     "start": "node server.js",
     "debug": "node %NODE_DEBUG_OPTION% server.js"
   },
-  "author": "npm <devintranet@mutuelledepoitiers.fr>",
+  "author": "Atcha <francois.cornuaud@gmail.com>",
   "license": "ISC"
 }
