@@ -21,19 +21,27 @@ exports.list_all_purchases = (req, res) => {
 };
 
 exports.create_a_purchase = (req, res) => {
-    db.query('INSERT INTO `purchase` SET ?', req.body, (error, result, fields) => {
-        if(error) {
-            res.send(error.sqlMessage);
-        } else {
-            db.query('SELECT * FROM `store` WHERE id = ?', result.insertId, (error, results, fields) => {
-                if(error) {
-                    res.send(error);
-                } else {
-                    res.json(results);
-                }
-            });
-        }
+    let productId = '';
+    db.query('SELECT id FROM `product` WHERE id = ?', req.body.productId, (error, result, fields) => {
+       if(error) {
+           res.send(error.sqlMessage);
+       } else if(result.id) {
+
+       }
     });
+    // db.query('INSERT INTO `purchase` SET ?', req.body, (error, result, fields) => {
+    //     if(error) {
+    //         res.send(error.sqlMessage);
+    //     } else {
+    //         db.query('SELECT * FROM `store` WHERE id = ?', result.insertId, (error, results, fields) => {
+    //             if(error) {
+    //                 res.send(error);
+    //             } else {
+    //                 res.json(results);
+    //             }
+    //         });
+    //     }
+    // });
 };
 
 exports.read_a_purchase = (req, res) => {

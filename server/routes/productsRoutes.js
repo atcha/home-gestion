@@ -9,6 +9,6 @@ module.exports = (app) => {
     app.route('/products/:productId')
         .get(products.read_a_product);
 
-    app.route('/products/:productName')
+    app.route('/products/name/:productName')
         .get(products.read_a_productbyname);
 }

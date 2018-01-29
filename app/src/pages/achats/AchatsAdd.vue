@@ -10,88 +10,88 @@
         leave="fadeOut"
         v-model="displayAddPurchaseAlert"
       >
-        Avant d'ajouter un nouvel achat, vous devez renseigner des rayons et des magasins au préalable.<br />
+        Avant d'ajouter un nouvel achat, vous devez renseigner des rayons et des magasins au préalable.<br/>
         Rendez-vous dans l'onglet configurations.
       </q-alert>
       <div class="container-form">
-          <div class="form-purchase row sm-gutter">
-            <div class="col-6">
-              <q-field :count="150">
-                <q-input
-                  type="text"
-                  float-label="Nom du produit"
-                  v-model="terms"
-                >
-                  <q-autocomplete
-                    separator
-                    :min-characters="3"
-                    @search="searchProduct"
-                  />
-                </q-input>
-              </q-field>
-            </div>
-            <div class="col-3">
-              <q-field>
-                <q-input
-                  type="text"
-                  float-label="Prix du produit"
-                  v-model="purchase.price" :after="[
+        <div class="form-purchase row sm-gutter">
+          <div class="col-6">
+            <q-field :count="150">
+              <q-input
+                type="text"
+                float-label="Nom du produit"
+                v-model="product"
+              >
+                <q-autocomplete
+                  separator
+                  :min-characters="3"
+                  @search="searchProduct"
+                />
+              </q-input>
+            </q-field>
+          </div>
+          <div class="col-3">
+            <q-field>
+              <q-input
+                type="text"
+                float-label="Prix du produit"
+                v-model="purchase.price" :after="[
                     {
                       icon: 'euro symbol'
                     }
-                  ]" />
-              </q-field>
-            </div>
-            <div class="col-3">
-              <q-field>
-                <q-input
-                  type="text"
-                  float-label="Prix au kg"
-                  v-model="purchase.weightPrice" :after="[
+                  ]"/>
+            </q-field>
+          </div>
+          <div class="col-3">
+            <q-field>
+              <q-input
+                type="text"
+                float-label="Prix au kg"
+                v-model="purchase.weightPrice" :after="[
                     {
                       icon: 'euro symbol'
                     }
-                  ]" />
-              </q-field>
-            </div>
-            <div class="col-4">
-              <q-field icon="reorder">
-                <q-select
-                  stack-label="Rayons"
-                  v-model="shelve"
-                  :options="shelves"
-                  multiple
-                  toggle
-                  @change="shelveChange"
-                />
-              </q-field>
-            </div>
-            <div class="col-4">
-              <q-field icon="store">
-                <q-select
-                  stack-label="Magasins"
-                  v-model="store"
-                  :options="stores"
-                />
-              </q-field>
-            </div>
-            <div class="col-4">
-              <q-field icon="date range">
-                <q-datetime
-                  v-model="purchase.date"
-                  type="date"
-                  float-label="Date d'achat"
-                  format="DD-MM-YYYY"
-                />
-              </q-field>
-            </div>
+                  ]"/>
+            </q-field>
+          </div>
+          <div class="col-4">
+            <q-field icon="reorder">
+              <q-select
+                stack-label="Rayons"
+                v-model="shelve"
+                :options="shelves"
+                multiple
+                toggle
+                @change="shelveChange"
+              />
+            </q-field>
+          </div>
+          <div class="col-4">
+            <q-field icon="store">
+              <q-select
+                stack-label="Magasins"
+                v-model="store"
+                :options="stores"
+              />
+            </q-field>
+          </div>
+          <div class="col-4">
+            <q-field icon="date range">
+              <q-datetime
+                v-model="purchase.date"
+                type="date"
+                float-label="Date d'achat"
+                format="DD-MM-YYYY"
+              />
+            </q-field>
           </div>
         </div>
+      </div>
       <div>
         <q-btn color="primary" @click="submitPurchase">Ajouter</q-btn>
       </div>
     </q-item>
-    <q-item-separator />
+    <q-item-separator/>
     <q-list-header>Liste des achats</q-list-header>
     <q-item>
       <q-data-table
@@ -173,7 +173,7 @@
           storeLabel: '',
           date: ''
         },
-        terms: '',
+        product: null,
         purchases: [],
         purchasesData: [],
         products: [],
@@ -294,17 +294,22 @@
         return this.$http.get('/api/shelves')
           .then((shelves) => {
             this.shelves = shelves.body
-            console.log(this.shelves)
             return this.shelves
           })
       },
       shelveChange (value) {
-        console.log(value)
+        // console.log(value)
       },
       getProducts () {
         this.$http.get('/api/products')
           .then((products) => {
-            this.products = products.body
+            this.products = products.body.map(resource => {
+              return {
+                label: resource.label,
+                id: resource.id,
+                value: resource.label.toLowerCase()
+              }
+            })
           })
       },
       getPurchases () {
