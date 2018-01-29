@@ -11,7 +11,7 @@ exports.list_all_purchases = (req, res) => {
         'FROM `purchase`\n' +
         'INNER JOIN product ON product.id = purchase.id_product\n' +
         'INNER JOIN store ON store.id = purchase.id_store\n' +
-        'INNER JOIN shelving ON shelving.id = product.id_shelving', (error, results, fields) => {
+        'INNER JOIN shelving ON shelving.id = purchase.id_shelving', (error, results, fields) => {
         if(error) {
             res.send(error);
         } else {

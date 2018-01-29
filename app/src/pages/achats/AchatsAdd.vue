@@ -17,8 +17,16 @@
           <div class="form-purchase row sm-gutter">
             <div class="col-6">
               <q-field :count="150">
-                <q-input type="text" float-label="Nom du produit" v-model="terms">
-                  <q-autocomplete :min-characters="3" @search="searchProduct" @selected="selected"/>
+                <q-input
+                  type="text"
+                  float-label="Nom du produit"
+                  v-model="terms"
+                >
+                  <q-autocomplete
+                    separator
+                    :min-characters="3"
+                    @search="searchProduct"
+                  />
                 </q-input>
               </q-field>
             </div>
@@ -53,7 +61,8 @@
                   v-model="shelve"
                   :options="shelves"
                   multiple
-                  radio
+                  toggle
+                  @change="shelveChange"
                 />
               </q-field>
             </div>
@@ -123,8 +132,6 @@
     QDataTable,
     Alert,
     QAlert,
-    Dialog,
-    Toast,
     filter
   } from 'quasar-framework'
 
@@ -147,9 +154,7 @@
       QCardMain,
       QDataTable,
       Alert,
-      QAlert,
-      Dialog,
-      Toast
+      QAlert
     },
     data () {
       return {
@@ -159,10 +164,7 @@
           value: ''
         },
         stores: [],
-        shelve: {
-          label: '',
-          value: ''
-        },
+        shelve: [],
         shelves: [],
         purchase: {
           price: '',
@@ -292,8 +294,12 @@
         return this.$http.get('/api/shelves')
           .then((shelves) => {
             this.shelves = shelves.body
+            console.log(this.shelves)
             return this.shelves
           })
+      },
+      shelveChange (value) {
+        console.log(value)
       },
       getProducts () {
         this.$http.get('/api/products')
@@ -317,9 +323,6 @@
       },
       searchProduct (terms, done) {
         done(filter(terms, {field: 'label', list: this.products}))
-      },
-      selected (item) {
-        Toast.create(`Selected suggestion "${item.label}"`)
       }
     }
   }
