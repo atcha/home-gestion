@@ -21,14 +21,12 @@ exports.list_all_purchases = (req, res) => {
 };
 
 exports.create_a_purchase = (req, res) => {
-    let productId = '';
-    db.query('SELECT id FROM `product` WHERE id = ?', req.body.productId, (error, result, fields) => {
-       if(error) {
-           res.send(error.sqlMessage);
-       } else if(result.id) {
+    console.log(req.body.product.id);
+    if(!req.body.product.id) {
 
-       }
-    });
+    } else {
+
+    }
     // db.query('INSERT INTO `purchase` SET ?', req.body, (error, result, fields) => {
     //     if(error) {
     //         res.send(error.sqlMessage);

@@ -16,30 +16,37 @@
       <div class="container-form">
         <div class="form-purchase row sm-gutter">
           <div class="col-6">
-            <q-field :count="150">
+            <q-field :count="150" error-label="Ce champ est obligatoire.">
               <q-input
                 type="text"
                 float-label="Nom du produit"
-                v-model="product"
+                v-model="product.label"
+                @blur="$v.product.label.$touch"
+                :error="$v.product.label.$error"
               >
                 <q-autocomplete
                   separator
                   :min-characters="3"
                   @search="searchProduct"
+                  @selected="selectedProduct"
                 />
               </q-input>
             </q-field>
           </div>
           <div class="col-3">
-            <q-field>
+            <q-field error-label="Ce champ est obligatoire.">
               <q-input
                 type="text"
                 float-label="Prix du produit"
-                v-model="purchase.price" :after="[
+                v-model="purchase.price"
+                :after="[
                     {
                       icon: 'euro symbol'
                     }
-                  ]"/>
+                  ]"
+                @blur="$v.purchase.price.$touch"
+                :error="$v.purchase.price.$error"
+              />
             </q-field>
           </div>
           <div class="col-3">
@@ -55,33 +62,39 @@
             </q-field>
           </div>
           <div class="col-4">
-            <q-field icon="reorder">
+            <q-field icon="reorder" error-label="Ce champ est obligatoire.">
               <q-select
                 stack-label="Rayons"
-                v-model="shelve"
+                v-model="shelvesSelected"
                 :options="shelves"
                 multiple
                 toggle
                 @change="shelveChange"
+                @blur="$v.shelvesSelected.$touch"
+                :error="$v.shelvesSelected.$error"
               />
             </q-field>
           </div>
           <div class="col-4">
-            <q-field icon="store">
+            <q-field icon="store" error-label="Ce champ est obligatoire.">
               <q-select
                 stack-label="Magasins"
                 v-model="store"
                 :options="stores"
+                @blur="$v.store.$touch"
+                :error="$v.store.$error"
               />
             </q-field>
           </div>
           <div class="col-4">
-            <q-field icon="date range">
+            <q-field icon="date range" error-label="Ce champ est obligatoire.">
               <q-datetime
                 v-model="purchase.date"
                 type="date"
                 float-label="Date d'achat"
                 format="DD-MM-YYYY"
+                @blur="$v.purchase.date.$touch"
+                :error="$v.purchase.date.$error"
               />
             </q-field>
           </div>
@@ -114,6 +127,7 @@
 </template>
 
 <script>
+  import { required } from 'vuelidate/lib/validators'
   import {
     QField,
     QInput,
@@ -132,6 +146,7 @@
     QDataTable,
     Alert,
     QAlert,
+    Toast,
     filter
   } from 'quasar-framework'
 
@@ -154,28 +169,31 @@
       QCardMain,
       QDataTable,
       Alert,
-      QAlert
+      QAlert,
+      Toast
     },
     data () {
       return {
-        name: '',
         store: {
           label: '',
           value: ''
         },
+        product: {
+          label: ''
+        },
+        shelvesSelected: [],
         stores: [],
-        shelve: [],
         shelves: [],
         purchase: {
           price: '',
           weightPrice: '',
-          shelveLabel: '',
-          storeLabel: '',
-          date: ''
+          date: '',
+          product: null,
+          shelve: null,
+          store: null
         },
-        product: null,
+        productSelected: null,
         purchases: [],
-        purchasesData: [],
         products: [],
         price: '',
         priceWeight: '',
@@ -272,6 +290,19 @@
         ]
       }
     },
+    validations: {
+      product: {
+        label: { required }
+      },
+      purchase: {
+        price: { required },
+        date: { required }
+      },
+      shelvesSelected: { required },
+      store: {
+        value: { required }
+      }
+    },
     mounted () {
       Promise.all([this.getStores(), this.getShelves()])
         .then(() => {
@@ -298,7 +329,7 @@
           })
       },
       shelveChange (value) {
-        // console.log(value)
+        // console.log(this.shelvesSelected)
       },
       getProducts () {
         this.$http.get('/api/products')
@@ -319,15 +350,48 @@
           })
       },
       submitPurchase () {
+        // Tests if fields are empty
+        this.$v.product.label.$touch()
+        this.$v.purchase.price.$touch()
+        this.$v.shelvesSelected.$touch()
+        this.$v.store.$touch()
+        this.$v.purchase.date.$touch()
+        if (this.$v.product.label.$error || this.$v.purchase.price.$error || this.$v.shelvesSelected.$error || this.$v.store.$error || this.$v.purchase.date.$error) {
+          Toast.create('Des champs obligatoires ne sont pas remplis')
+          return
+        }
+
+        // Test if there are no shelves or no stores
         if (!this.canAddPurchase) {
           this.displayAddPurchaseAlert = true
         }
         else {
-
+          // Check if product is selected from autocomplete or if we have to create one
+          if (this.productSelected != null) {
+            this.purchase.product = this.productSelected
+          }
+          else {
+            this.$http.post('/api/products', this.product)
+              .then((product) => {
+                this.purchase.product = product.body[0]
+                this.products.push(product.body[0])
+              })
+          }
+          this.purchase.shelve = this.shelvesSelected
+          this.purchase.store = this.store
+          console.log(this.purchase)
+          // this.$http.post('/api/purchases', this.purchase)
+          //   .then((purchase) => {
+          //     console.log(purchase)
+          //   })
         }
       },
       searchProduct (terms, done) {
         done(filter(terms, {field: 'label', list: this.products}))
+      },
+      selectedProduct (selected) {
+        this.productSelected = selected
+        console.log(this.productSelected)
       }
     }
   }
