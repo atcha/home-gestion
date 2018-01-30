@@ -79,10 +79,10 @@
             <q-field icon="store" error-label="Ce champ est obligatoire.">
               <q-select
                 stack-label="Magasins"
-                v-model="store"
+                v-model="store.value"
                 :options="stores"
-                @blur="$v.store.$touch"
-                :error="$v.store.$error"
+                @blur="$v.store.value.$touch"
+                :error="$v.store.value.$error"
               />
             </q-field>
           </div>
@@ -186,10 +186,10 @@
         shelves: [],
         purchase: {
           price: '',
-          weightPrice: '',
+          weightPrice: null,
           date: '',
           product: null,
-          shelve: null,
+          shelve: [],
           store: null
         },
         productSelected: null,
@@ -354,9 +354,9 @@
         this.$v.product.label.$touch()
         this.$v.purchase.price.$touch()
         this.$v.shelvesSelected.$touch()
-        this.$v.store.$touch()
+        this.$v.store.value.$touch()
         this.$v.purchase.date.$touch()
-        if (this.$v.product.label.$error || this.$v.purchase.price.$error || this.$v.shelvesSelected.$error || this.$v.store.$error || this.$v.purchase.date.$error) {
+        if (this.$v.product.label.$error || this.$v.purchase.price.$error || this.$v.shelvesSelected.$error || this.$v.store.value.$error || this.$v.purchase.date.$error) {
           Toast.create('Des champs obligatoires ne sont pas remplis')
           return
         }
@@ -369,21 +369,26 @@
           // Check if product is selected from autocomplete or if we have to create one
           if (this.productSelected != null) {
             this.purchase.product = this.productSelected
+            this.purchase.shelve = this.shelvesSelected
+            this.purchase.store = this.store
+            this.$http.post('/api/purchases', this.purchase)
+              .then((purchase) => {
+                this.getPurchases()
+              })
           }
           else {
             this.$http.post('/api/products', this.product)
               .then((product) => {
                 this.purchase.product = product.body[0]
                 this.products.push(product.body[0])
+                this.purchase.shelve = this.shelvesSelected
+                this.purchase.store = this.store
+                this.$http.post('/api/purchases', this.purchase)
+                  .then((purchase) => {
+                    this.getPurchases()
+                  })
               })
           }
-          this.purchase.shelve = this.shelvesSelected
-          this.purchase.store = this.store
-          console.log(this.purchase)
-          // this.$http.post('/api/purchases', this.purchase)
-          //   .then((purchase) => {
-          //     console.log(purchase)
-          //   })
         }
       },
       searchProduct (terms, done) {

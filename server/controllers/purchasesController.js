@@ -21,25 +21,36 @@ exports.list_all_purchases = (req, res) => {
 };
 
 exports.create_a_purchase = (req, res) => {
-    console.log(req.body.product.id);
-    if(!req.body.product.id) {
+    console.log(req.body);
+    let formatedPurchase = {
+        id_product: '',
+        id_store: '',
+        id_shelving: '',
+        price: '',
+        weight_price: '',
+        purchase_date: ''
 
-    } else {
-
-    }
-    // db.query('INSERT INTO `purchase` SET ?', req.body, (error, result, fields) => {
-    //     if(error) {
-    //         res.send(error.sqlMessage);
-    //     } else {
-    //         db.query('SELECT * FROM `store` WHERE id = ?', result.insertId, (error, results, fields) => {
-    //             if(error) {
-    //                 res.send(error);
-    //             } else {
-    //                 res.json(results);
-    //             }
-    //         });
-    //     }
-    // });
+    };
+    formatedPurchase.id_product = req.body.product.id;
+    formatedPurchase.price = req.body.price;
+    formatedPurchase.weight_price = req.body.price;
+    formatedPurchase.purchase_date = req.body.date;
+    db.query('SELECT id FROM `store` WHERE value = ?', req.body.store.value, (error, store, fields) => {
+        if(error) {
+             res.send(error.sqlMessage);
+        }
+        formatedPurchase.id_store = store[0].id;
+        req.body.shelve.forEach((shelve) => {
+            db.query('SELECT id FROM `shelving` WHERE value = ?', shelve, (error, shelve, fields) => {
+                formatedPurchase.id_shelving = shelve[0].id;
+                db.query('INSERT INTO `purchase` SET ?', formatedPurchase, (error, result, fields) => {
+                    if(error) {
+                        res.send(error.sqlMessage);
+                    }
+                });
+            })
+        });
+    });
 };
 
 exports.read_a_purchase = (req, res) => {
