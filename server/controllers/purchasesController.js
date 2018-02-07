@@ -1,21 +1,11 @@
 let db = require('../connection');
 
 exports.list_all_purchases = (req, res) => {
-    db.query('SELECT purchase.id, ' +
-        'product.label AS name, ' +
-        'purchase.price, ' +
-        'purchase.weight_price AS weightPrice, ' +
-        'shelving.label AS shelveLabel, ' +
-        'store.label AS storeLabel, ' +
-        'purchase.purchase_date\n' +
-        'FROM `purchase`\n' +
-        'INNER JOIN product ON product.id = purchase.id_product\n' +
-        'INNER JOIN store ON store.id = purchase.id_store\n' +
-        'INNER JOIN shelving ON shelving.id = purchase.id_shelving', (error, results, fields) => {
+    db.query('SELECT * FROM `purchase`', (error, purchases, fields) => {
         if(error) {
             res.send(error);
         } else {
-            res.json(results);
+            res.send(purchases);
         }
     });
 };
@@ -74,7 +64,6 @@ exports.update_a_purchase = (req, res) => {
     });
 };
 
-
 exports.delete_a_purchase = (req, res) => {
     db.query('DELETE FROM `store` WHERE id = ?', req.params.storeId, (error, results, fields) => {
         if (error) {
@@ -84,4 +73,18 @@ exports.delete_a_purchase = (req, res) => {
         }
     });
 };
+
+exports.read_purchases_shelves = (req, res) => {
+    db.query('SELECT DISTINCT shelving.id, shelving.label, shelving.value FROM `shelving`\n'+
+        'JOIN `product_shelving_store` AS pss on pss.id_shelving = shelving.id\n'+
+        'JOIN `purchase` ON purchase.id_product = pss.id_product\n'+
+        'WHERE purchase.id = ?', req.params.purchaseId, (error, shelves, fields) => {
+        if (error) {
+            res.send(error);
+        } else {
+            res.json(shelves);
+        }
+    });
+};
+
 

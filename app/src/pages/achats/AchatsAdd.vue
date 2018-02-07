@@ -203,7 +203,7 @@
           title: 'Liste des achats',
           refresh: false,
           noHeader: false,
-          columnPicker: false,
+          columnPicker: true,
           bodyStyle: {
             maxHeight: '500px'
           },
@@ -239,19 +239,24 @@
           {
             label: 'Id',
             field: 'id',
-            width: '20px'
+            width: '20px',
+            filter: true,
+            sort: true
           },
           {
             label: 'Nom du produit',
-            field: 'name',
+            field: 'productLabel',
             width: '140px',
             classes: 'bg-orange-2',
-            filter: true
+            filter: true,
+            sort: true,
+            type: 'string'
           },
           {
             label: 'Prix unitaire',
             field: 'price',
             filter: true,
+            sort: true,
             width: '70px',
             format (value) {
               return value + ' &euro;'
@@ -261,6 +266,7 @@
             label: 'Prix au kg',
             field: 'weightPrice',
             filter: true,
+            sort: true,
             width: '70px',
             format (value) {
               return value + ' &euro;'
@@ -268,20 +274,24 @@
           },
           {
             label: 'Rayon',
-            field: 'shelveLabel',
+            field: 'shelvesLabel',
             filter: true,
+            sort: true,
             width: '70px'
           },
           {
             label: 'Magasin',
             field: 'storeLabel',
             filter: true,
+            sort: true,
+            type: 'string',
             width: '70px'
           },
           {
             label: 'Date d\'achat',
-            field: 'purchase_date',
+            field: 'purchaseDate',
             filter: true,
+            sort: true,
             width: '70px',
             format (value) {
               return new Date(value).toLocaleDateString()
@@ -329,7 +339,6 @@
           })
       },
       shelveChange (value) {
-        // console.log(this.shelvesSelected)
       },
       getProducts () {
         this.$http.get('/api/products')
@@ -346,7 +355,40 @@
       getPurchases () {
         this.$http.get('/api/purchases')
           .then((purchases) => {
-            this.purchases = purchases.body
+            purchases.body.forEach((simplePurchase) => {
+              let purchase = {
+                id: '',
+                price: '',
+                purchaseDate: '',
+                weightPrice: '',
+                productLabel: '',
+                storeLabel: '',
+                shelvesLabel: ''
+              }
+
+              purchase.id = simplePurchase.id
+              purchase.price = simplePurchase.price
+              purchase.purchaseDate = simplePurchase.purchase_date
+              purchase.weightPrice = simplePurchase.weight_price
+              this.$http.get('/api/stores/' + simplePurchase.id_store)
+                .then((store) => {
+                  purchase.storeLabel = store.body[0].label
+                  this.$http.get('/api/products/' + simplePurchase.id_product)
+                    .then((product) => {
+                      purchase.productLabel = product.body[0].label
+                      this.purchases.push(purchase)
+                      this.$http.get('/api/purchases/' + simplePurchase.id + '/shelves/')
+                        .then((shelves) => {
+                          shelves.body.forEach((shelve, index) => {
+                            purchase.shelvesLabel = purchase.shelvesLabel.concat(shelve.label)
+                            if (index < shelves.body.length - 1) {
+                              purchase.shelvesLabel = purchase.shelvesLabel.concat(' ,')
+                            }
+                          })
+                        })
+                    })
+                })
+            })
           })
       },
       submitPurchase () {

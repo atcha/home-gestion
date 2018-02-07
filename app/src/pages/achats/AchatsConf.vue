@@ -228,7 +228,6 @@ export default {
     }
   },
   mounted () {
-    console.log('ok')
     Promise.all([this.getStores(), this.getShelves()])
       .then(() => {
         if (this.stores.length > 0 && this.shelves.length > 0) {
