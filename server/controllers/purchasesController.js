@@ -11,11 +11,9 @@ exports.list_all_purchases = (req, res) => {
 };
 
 exports.create_a_purchase = (req, res) => {
-    console.log(req.body);
     let formatedPurchase = {
         id_product: '',
         id_store: '',
-        id_shelving: '',
         price: '',
         weight_price: '',
         purchase_date: ''
@@ -28,18 +26,30 @@ exports.create_a_purchase = (req, res) => {
     db.query('SELECT id FROM `store` WHERE value = ?', req.body.store.value, (error, store, fields) => {
         if(error) {
              res.send(error.sqlMessage);
+        } else {
+            formatedPurchase.id_store = store[0].id;
+            req.body.shelve.forEach((shelve) => {
+                db.query('SELECT id FROM `shelving` WHERE value = ?', shelve, (error, shelve, fields) => {
+                    db.query('INSERT INTO `purchase` SET ?', formatedPurchase, (error, result, fields) => {
+                        if(error) {
+                            res.send(error.sqlMessage);
+                        } else {
+                            // TODO: Check if line already exists
+                            db.query('INSERT INTO `product_shelving_store` SET ?',
+                                {id_store: formatedPurchase.id_store, id_product: formatedPurchase.id_product, id_shelving: shelve[0].id},
+                                (error) => {
+                                    if(error) {
+                                        res.send(error.sqlMessage);
+                                    } else {
+                                        res.json({ message: 'purchase successfully added' });
+                                    }
+                                });
+                        }
+                    });
+
+                })
+            });
         }
-        formatedPurchase.id_store = store[0].id;
-        req.body.shelve.forEach((shelve) => {
-            db.query('SELECT id FROM `shelving` WHERE value = ?', shelve, (error, shelve, fields) => {
-                formatedPurchase.id_shelving = shelve[0].id;
-                db.query('INSERT INTO `purchase` SET ?', formatedPurchase, (error, result, fields) => {
-                    if(error) {
-                        res.send(error.sqlMessage);
-                    }
-                });
-            })
-        });
     });
 };
 

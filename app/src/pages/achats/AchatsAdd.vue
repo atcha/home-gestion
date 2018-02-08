@@ -3,6 +3,15 @@
     <q-list-header>Ajouter un achat</q-list-header>
     <q-item class="column items-stretch sm-gutter">
       <q-alert
+        color="info"
+        icon="info"
+        dismissible
+        enter="fadeIn"
+        leave="fadeOut"
+      >
+        Pour ajouter des magasins ou des rayons veuillez vous rendre dans la section cofiguration du menu.
+      </q-alert>
+      <q-alert
         color="warning"
         icon="warning"
         dismissible
@@ -353,6 +362,7 @@
           })
       },
       getPurchases () {
+        this.purchases = []
         this.$http.get('/api/purchases')
           .then((purchases) => {
             purchases.body.forEach((simplePurchase) => {
@@ -370,13 +380,13 @@
               purchase.price = simplePurchase.price
               purchase.purchaseDate = simplePurchase.purchase_date
               purchase.weightPrice = simplePurchase.weight_price
+              this.purchases.push(purchase)
               this.$http.get('/api/stores/' + simplePurchase.id_store)
                 .then((store) => {
                   purchase.storeLabel = store.body[0].label
                   this.$http.get('/api/products/' + simplePurchase.id_product)
                     .then((product) => {
                       purchase.productLabel = product.body[0].label
-                      this.purchases.push(purchase)
                       this.$http.get('/api/purchases/' + simplePurchase.id + '/shelves/')
                         .then((shelves) => {
                           shelves.body.forEach((shelve, index) => {
@@ -403,7 +413,7 @@
           return
         }
 
-        // Test if there are no shelves or no stores
+        // Test if there is no shelve or no store
         if (!this.canAddPurchase) {
           this.displayAddPurchaseAlert = true
         }
@@ -438,7 +448,6 @@
       },
       selectedProduct (selected) {
         this.productSelected = selected
-        console.log(this.productSelected)
       }
     }
   }
