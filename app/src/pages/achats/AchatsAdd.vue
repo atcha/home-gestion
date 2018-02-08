@@ -35,7 +35,7 @@
               >
                 <q-autocomplete
                   separator
-                  :min-characters="3"
+                  :min-characters="1"
                   @search="searchProduct"
                   @selected="selectedProduct"
                 />
@@ -426,6 +426,7 @@
             this.$http.post('/api/purchases', this.purchase)
               .then((purchase) => {
                 this.getPurchases()
+                this.clearForm()
               })
           }
           else {
@@ -438,10 +439,20 @@
                 this.$http.post('/api/purchases', this.purchase)
                   .then((purchase) => {
                     this.getPurchases()
+                    this.clearForm()
                   })
               })
           }
         }
+      },
+      clearForm () {
+        this.store.label = ''
+        this.store.value = ''
+        this.product.label = ''
+        this.shelvesSelected = []
+        this.purchase.price = ''
+        this.purchase.weightPrice = null
+        this.purchase.date = ''
       },
       searchProduct (terms, done) {
         done(filter(terms, {field: 'label', list: this.products}))
