@@ -112,14 +112,27 @@
 
         this.$http.get('/api/stats/products/count/months')
           .then((results) => {
-            let months = results.body.map(nbproducts => nbproducts.month)
-            let productNb = results.body.map(nbproducts => nbproducts.nb)
             console.log(results.body)
+            let months = results.body.map(nbproducts => nbproducts.month)
+            // results.body.map(nbproducts => nbproducts.nb)
+            let productNb = []
+            let i = 0
+            while (i < 12) {
+              productNb[i] = 0
+              results.body.forEach(product => {
+                if (product.month === i + 1) {
+                  productNb[i] = product.nb
+                }
+              })
+              i++
+            }
+
+            console.log(productNb)
 
             this.nbProductsMonths.months.push(months)
             this.nbProductsMonths.nb.push(productNb)
             this.nbProductMonthCollection = {
-              labels: ['janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+              labels: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
               datasets: [
                 {
                   label: 'Nombre de produit',
