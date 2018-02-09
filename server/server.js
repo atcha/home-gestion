@@ -17,12 +17,14 @@ app.use(bodyParser.json());
 let storesRoutes = require('./routes/storeRoutes'),
     shelvingRoutes = require('./routes/shelvingRoutes'),
     productsRoutes = require('./routes/productsRoutes'),
-    purchasesRoutes = require('./routes/purchasesRoutes');
+    purchasesRoutes = require('./routes/purchasesRoutes'),
+    statsRoutes = require('./routes/statsRoutes');
 
 storesRoutes(app);
 shelvingRoutes(app);
 productsRoutes(app);
-purchasesRoutes(app);
+purchasesRoutes(app),
+statsRoutes(app);
 
 app.listen(port);
 

@@ -5,9 +5,10 @@
       <div class="col-6">
         <q-card>
             <q-card-title>
-              Nombre de produits achetés par mois
+              Nombre de produits achetés par mois cette année
             </q-card-title>
             <q-card-main>
+              <line-chart :chart-data="nbProductMonthCollection" :options="nbProductOptions"></line-chart>
             </q-card-main>
         </q-card>
       </div>
@@ -21,13 +22,13 @@
           </q-card-main>
         </q-card>
       </div>
-      <div class="col-4">
+      <div class="col-6">
         <q-card>
           <q-card-title>
             Produits les plus achetés
           </q-card-title>
           <q-card-main>
-            <line-chart :chart-data="productCollection"></line-chart>
+            <line-chart :chart-data="nbProductCollection" :options="nbProductOptions"></line-chart>
           </q-card-main>
         </q-card>
       </div>
@@ -62,41 +63,72 @@
     data () {
       return {
         products: null,
-        productDataCollection: null,
-        datacollection: null
+        nbProducts: {
+          labels: [],
+          nb: []
+        },
+        nbProductsMonths: {
+          months: [],
+          nb: []
+        },
+        nbProductCollection: null,
+        nbProductMonthCollection: null,
+        nbProductOptions: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          },
+          responsive: true,
+          maintainAspectRatio: false
+        }
       }
     },
     mounted () {
       this.fillData()
     },
     methods: {
-      getProducts () {
-        this.$http.get('/api/products')
-          .then((products) => {
-            this.products = products.body.map(resource => {
-              return {
-                label: resource.label,
-                id: resource.id,
-                value: resource.label.toLowerCase()
-              }
-            })
-          })
-      },
       fillData () {
-        this.datacollection = {
-          labels: [this.getRandomInt(), this.getRandomInt()],
-          datasets: [
-            {
-              label: 'Data One',
-              backgroundColor: '#f87979',
-              data: [this.getRandomInt(), this.getRandomInt()]
-            }, {
-              label: 'Data One',
-              backgroundColor: '#f87979',
-              data: [this.getRandomInt(), this.getRandomInt()]
+        this.$http.get('/api/stats/products/count')
+          .then((results) => {
+            let productLabel = results.body.map(nbproducts => nbproducts.label)
+            let productNb = results.body.map(nbproducts => nbproducts.nb)
+
+            this.nbProducts.labels.push(productLabel)
+            this.nbProducts.nb.push(productNb)
+            this.nbProductCollection = {
+              labels: this.nbProducts.labels[0],
+              datasets: [
+                {
+                  label: 'Nombre de produit',
+                  backgroundColor: '#f87979',
+                  data: this.nbProducts.nb[0]
+                }
+              ]
             }
-          ]
-        }
+          })
+
+        this.$http.get('/api/stats/products/count/months')
+          .then((results) => {
+            let months = results.body.map(nbproducts => nbproducts.month)
+            let productNb = results.body.map(nbproducts => nbproducts.nb)
+            console.log(results.body)
+
+            this.nbProductsMonths.months.push(months)
+            this.nbProductsMonths.nb.push(productNb)
+            this.nbProductMonthCollection = {
+              labels: ['janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+              datasets: [
+                {
+                  label: 'Nombre de produit',
+                  backgroundColor: '#f87979',
+                  data: this.nbProductsMonths.nb[0]
+                }
+              ]
+            }
+          })
       }
     }
   }

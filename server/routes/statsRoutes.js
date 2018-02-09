@@ -3,15 +3,13 @@ module.exports = (app) => {
 
 
     // Purchases Routes
-    app.route('/stat/purchases')
-        .get(purchases.list_all_purchases)
-        .post(purchases.create_a_purchase);
+    // app.route('/stat/purchases')
+    //     .get(purchases.list_all_purchases)
+    //     .post(purchases.create_a_purchase);
 
-    app.route('/stats/products')
-        .get(purchases.read_a_purchase)
-        .put(purchases.update_a_purchase)
-        .delete(purchases.delete_a_purchase);
+    app.route('/stats/products/count')
+        .get(purchases.read_purchases_nbproducts);
 
-    app.route('/purchases/stores')
-        .get(purchases.read_purchases_shelves);
+    app.route('/stats/products/count/months')
+        .get(purchases.read_purchases_nbproductsbymonths);
 }
