@@ -2,7 +2,8 @@
 let express = require('express'),
     app = express(),
     port = process.env.PORT || 3000,
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    cors = require('cors');
 
 // Models
 // let product = require('./models/product'),
@@ -18,13 +19,15 @@ let storesRoutes = require('./routes/storeRoutes'),
     shelvingRoutes = require('./routes/shelvingRoutes'),
     productsRoutes = require('./routes/productsRoutes'),
     purchasesRoutes = require('./routes/purchasesRoutes'),
-    statsRoutes = require('./routes/statsRoutes');
+    statsRoutes = require('./routes/statsRoutes'),
+    authRoutes = require('./routes/authRoutes');
 
 storesRoutes(app);
 shelvingRoutes(app);
 productsRoutes(app);
-purchasesRoutes(app),
+purchasesRoutes(app);
 statsRoutes(app);
+authRoutes(app);
 
 app.listen(port);
 

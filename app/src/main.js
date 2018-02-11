@@ -17,24 +17,24 @@ import router from './router'
 import Vuelidate from 'vuelidate'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import VueAuthenticate from 'vue-authenticate'
+import VueFire from 'vuefire'
+import * as firebase from 'firebase'
 
 Vue.config.productionTip = false
-// Vue.use(VueResource)
 Vue.use(Quasar) // Install Quasar Framework
 Vue.use(Vuelidate)
-
 Vue.use(VueAxios, axios)
-Vue.use(VueAuthenticate, {
-  baseUrl: 'http://localhost:3000', // Your API domain
+Vue.use(VueFire)
 
-  providers: {
-    github: {
-      clientId: '',
-      redirectUri: 'http://localhost:84/auth/callback' // Your client app URL
-    }
-  }
-})
+let config = {
+  apiKey: 'AIzaSyD7U5ODIXRUFK5ocU7ZdGqPygURbvWfb4g',
+  authDomain: 'home-gestion-app.firebaseapp.com',
+  databaseURL: 'https://home-gestion-app.firebaseio.com',
+  projectId: 'home-gestion-app',
+  storageBucket: 'home-gestion-app.appspot.com',
+  messagingSenderId: '26296091690'
+}
+firebase.initializeApp(config)
 
 if (__THEME === 'mat') {
   require('quasar-extras/roboto-font')
