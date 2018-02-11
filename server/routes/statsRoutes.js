@@ -1,5 +1,5 @@
 module.exports = (app) => {
-    let purchases = require('../controllers/statsController');
+    let stats = require('../controllers/statsController');
 
 
     // Purchases Routes
@@ -8,8 +8,14 @@ module.exports = (app) => {
     //     .post(purchases.create_a_purchase);
 
     app.route('/stats/products/count')
-        .get(purchases.read_purchases_nbproducts);
+        .get(stats.read_purchases_nbproducts);
 
     app.route('/stats/products/count/months')
-        .get(purchases.read_purchases_nbproductsbymonths);
+        .get(stats.read_purchases_nbproductsbymonths);
+
+    app.route('/stats/products/bought')
+        .get(stats.list_all_boughtproducts);
+
+    app.route('/stats/products/count/stores')
+        .get(stats.read_purchases_nbproductsbystore);
 }

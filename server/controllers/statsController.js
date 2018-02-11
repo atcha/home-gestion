@@ -25,3 +25,30 @@ exports.read_purchases_nbproductsbymonths = (req, res) => {
         }
     });
 }
+
+exports.list_all_boughtproducts = (req, res) => {
+    db.query('SELECT DISTINCT product.label AS label, product.id AS value\n' +
+        'FROM `product`, `purchase`\n' +
+        'WHERE product.id = purchase.id_product', (error, results) => {
+        if(error) {
+            res.send(error);
+        } else {
+            res.json(results);
+        }
+    });
+}
+
+exports.read_purchases_nbproductsbystore = (req, res) => {
+    db.query('SELECT product.label productLabel, store.label as label, count(product.id) as nb\n' +
+        'FROM `product`\n' +
+        'JOIN `purchase` ON product.id = purchase.id_product\n' +
+        'JOIN `store` ON store.id = purchase.id_store\n' +
+        'WHERE product.id = '+ req.query.product + '\n' +
+        'GROUP BY store.id ', (error, results) => {
+        if(error) {
+            res.send(error);
+        } else {
+            res.json(results);
+        }
+    });
+}

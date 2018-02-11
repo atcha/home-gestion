@@ -15,10 +15,26 @@
       <div class="col-6">
         <q-card>
           <q-card-title>
-            Nombre de produits achetés ce mois-ci
+            Produits achetés par magasins
+            <q-select
+              stack-label="Produits achetés"
+              v-model="productSelected"
+              :options="boughtProducts"
+              toggle
+              @change="boughtProductChange"/>
+            <line-chart v-if="productSelected" :chart-data="nbProductStoreCollection" :options="nbProductOptions"></line-chart>
+            <q-alert
+              v-if="!productSelected"
+              color="info"
+              icon="info"
+              dismissible
+              enter="fadeIn"
+              leave="fadeOut"
+            >
+              Veuillez sélectionner un produit pour voir les stats d'achats de celui-ci par magasin.
+            </q-alert>
           </q-card-title>
           <q-card-main>
-            test
           </q-card-main>
         </q-card>
       </div>
@@ -28,7 +44,7 @@
             Produits les plus achetés
           </q-card-title>
           <q-card-main>
-            <line-chart :chart-data="nbProductCollection" :options="nbProductOptions"></line-chart>
+            <doughnut-chart :chart-data="nbProductCollection"></doughnut-chart>
           </q-card-main>
         </q-card>
       </div>
@@ -38,6 +54,7 @@
 
 <script>
   import LineChart from '../../components/BartChart'
+  import DoughnutChart from '../../components/DoughnutChart'
   import {
     QList,
     QListHeader,
@@ -45,7 +62,10 @@
     QCardTitle,
     QCardMain,
     QCardSeparator,
-    QItem
+    QItem,
+    QSelect,
+    Alert,
+    QAlert
   } from 'quasar-framework'
 
   export default {
@@ -58,11 +78,18 @@
       QCardMain,
       QCardSeparator,
       QItem,
-      LineChart
+      LineChart,
+      DoughnutChart,
+      QSelect,
+      Alert,
+      QAlert
     },
     data () {
       return {
         products: null,
+        productSelected: null,
+        boughtProducts: [],
+        stores: null,
         nbProducts: {
           labels: [],
           nb: []
@@ -71,8 +98,13 @@
           months: [],
           nb: []
         },
+        nbProductsStore: {
+          labels: [],
+          nb: []
+        },
         nbProductCollection: null,
         nbProductMonthCollection: null,
+        nbProductStoreCollection: null,
         nbProductOptions: {
           scales: {
             yAxes: [{
@@ -88,13 +120,25 @@
     },
     mounted () {
       this.fillData()
+      this.getBoughtProducts()
     },
     methods: {
+      getBoughtProducts () {
+        this.$http.get('/api/stats/products/bought')
+          .then((results) => {
+            this.boughtProducts = results.body
+          })
+      },
       fillData () {
         this.$http.get('/api/stats/products/count')
           .then((results) => {
             let productLabel = results.body.map(nbproducts => nbproducts.label)
             let productNb = results.body.map(nbproducts => nbproducts.nb)
+            let color = []
+
+            productNb.forEach(() => {
+              color.push(this.getRandomColor())
+            })
 
             this.nbProducts.labels.push(productLabel)
             this.nbProducts.nb.push(productNb)
@@ -103,7 +147,7 @@
               datasets: [
                 {
                   label: 'Nombre de produit',
-                  backgroundColor: '#f87979',
+                  backgroundColor: color,
                   data: this.nbProducts.nb[0]
                 }
               ]
@@ -112,9 +156,7 @@
 
         this.$http.get('/api/stats/products/count/months')
           .then((results) => {
-            console.log(results.body)
             let months = results.body.map(nbproducts => nbproducts.month)
-            // results.body.map(nbproducts => nbproducts.nb)
             let productNb = []
             let i = 0
             while (i < 12) {
@@ -127,8 +169,6 @@
               i++
             }
 
-            console.log(productNb)
-
             this.nbProductsMonths.months.push(months)
             this.nbProductsMonths.nb.push(productNb)
             this.nbProductMonthCollection = {
@@ -138,6 +178,38 @@
                   label: 'Nombre de produit',
                   backgroundColor: '#f87979',
                   data: this.nbProductsMonths.nb[0]
+                }
+              ]
+            }
+          })
+      },
+      getRandomColor () {
+        const letters = '0123456789ABCDEF'
+        let color = '#'
+        for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)]
+        }
+        return color
+      },
+      boughtProductChange () {
+        console.log(this.productSelected)
+        this.$http.get('/api/stats/products/count/stores', {params: {product: this.productSelected}})
+          .then((results) => {
+            this.nbProductsStore.labels = []
+            this.nbProductsStore.nb = []
+            let storeLabel = results.body.map(results => results.label)
+            let productNb = results.body.map(results => results.nb)
+            let color = this.getRandomColor()
+
+            this.nbProductsStore.labels.push(storeLabel)
+            this.nbProductsStore.nb.push(productNb)
+            this.nbProductStoreCollection = {
+              labels: this.nbProductsStore.labels[0],
+              datasets: [
+                {
+                  label: 'Nombre d\'achats par magasin du produit ' + results.body[0].productLabel,
+                  backgroundColor: color,
+                  data: this.nbProductsStore.nb[0]
                 }
               ]
             }

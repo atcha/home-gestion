@@ -2,14 +2,26 @@
   <!-- Left Side Panel -->
   <q-list no-border link>
     <q-list-header>Menu</q-list-header>
-    <q-side-link item to="/">
+    <q-side-link exact item to="/">
       <q-item-side icon="home" />
       <q-item-main label="Accueil" />
     </q-side-link>
-    <q-side-link item to="/achats/add">
-      <q-item-side icon="shopping basket" />
-      <q-item-main label="Gestion des achats" />
-    </q-side-link>
+    <q-collapsible :opened="boughtOpened" icon="shopping basket" menu label="Gestion des achats">
+      <div class="scroll" style="max-height: 400px">
+        <q-side-link item to="/achats/add">
+          <q-item-side icon="add" />
+          <q-item-main label="Ajouter des achats" />
+        </q-side-link>
+        <q-side-link item to="/achats/stats">
+          <q-item-side icon="pie chart" />
+          <q-item-main label="Statistiques des achats" />
+        </q-side-link>
+        <q-side-link item to="/achats/config">
+          <q-item-side icon="build" />
+          <q-item-main label="Configurer les magasins/rayons" />
+        </q-side-link>
+      </div>
+    </q-collapsible>
   </q-list>
 </template>
 
@@ -19,7 +31,8 @@
     QListHeader,
     QSideLink,
     QItemMain,
-    QItemSide
+    QItemSide,
+    QCollapsible
   } from 'quasar-framework'
 
 export default {
@@ -29,10 +42,13 @@ export default {
       QListHeader,
       QSideLink,
       QItemMain,
-      QItemSide
+      QItemSide,
+      QCollapsible
     },
     data () {
-      return {}
+      return {
+        boughtOpened: false
+      }
     }
 }
 </script>
