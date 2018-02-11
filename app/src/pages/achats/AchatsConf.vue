@@ -6,14 +6,14 @@
             <q-list-header>Ajouter un magasin</q-list-header>
             <q-item>
               <div class="form-purchase row sm-gutter">
-                <div class="col-6">
+                <div class="col-12 col-md-6">
                   <q-input
                     float-label="Nom du magasin"
                     v-model="store.label"
                     ref="storeLabel"
                   />
                 </div>
-                <div class="col-6">
+                <div class="col-12 col-md-6">
                   <q-input
                     float-label="Valeur du magasin"
                     v-model="store.value" />
@@ -66,12 +66,12 @@
               <q-list-header>Ajouter un Rayon de magasin</q-list-header>
               <q-item>
                 <div class="form-purchase row sm-gutter">
-                  <div class="col-6">
+                  <div class="col-12 col-md-6">
                     <q-input
                       float-label="Nom du rayon (ex : salle de bain)"
                       v-model="shelve.label" />
                   </div>
-                  <div class="col-6">
+                  <div class="col-12 col-md-6">
                     <q-input
                       float-label="Valeur du rayon"
                       v-model="shelve.value" />
@@ -239,13 +239,13 @@ export default {
     getStores () {
       this.$http.get('/api/stores')
         .then((stores) => {
-          this.stores = stores.body
+          this.stores = stores.data
         })
     },
     getShelves () {
       this.$http.get('/api/shelves')
         .then((shelves) => {
-          this.shelves = shelves.body
+          this.shelves = shelves.data
         })
     },
     modifyConfig (type, selected) {
@@ -315,7 +315,7 @@ export default {
           // TODO: Gestion d'erreur si champs vide (voir vuelidate)
           this.$http.post('/api/stores', this.store)
             .then((store) => {
-              this.stores.push(store.body[0])
+              this.stores.push(store.data[0])
               this.store.label = ''
               this.store.value = ''
               Toast.create('Nouveau magasin ajouté.')
@@ -337,7 +337,7 @@ export default {
         if (mode === 'add') {
           this.$http.post('/api/shelves', this.shelve)
             .then((shelve) => {
-              this.shelves.push(shelve.body[0])
+              this.shelves.push(shelve.data[0])
               this.shelve.label = ''
               this.shelve.value = ''
               Toast.create('Nouveau rayon ajouté.')

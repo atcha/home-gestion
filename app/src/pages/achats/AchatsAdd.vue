@@ -24,7 +24,7 @@
       </q-alert>
       <div class="container-form">
         <div class="form-purchase row sm-gutter">
-          <div class="col-6">
+          <div class="col-12 col-md-6">
             <q-field :count="150" error-label="Ce champ est obligatoire.">
               <q-input
                 type="text"
@@ -42,7 +42,7 @@
               </q-input>
             </q-field>
           </div>
-          <div class="col-3">
+          <div class="col-6 col-md-3">
             <q-field error-label="Ce champ est obligatoire.">
               <q-input
                 type="text"
@@ -58,7 +58,7 @@
               />
             </q-field>
           </div>
-          <div class="col-3">
+          <div class="col-6 col-md-3">
             <q-field>
               <q-input
                 type="text"
@@ -70,7 +70,7 @@
                   ]"/>
             </q-field>
           </div>
-          <div class="col-4">
+          <div class="col-12 col-md-4">
             <q-field icon="reorder" error-label="Ce champ est obligatoire.">
               <q-select
                 stack-label="Rayons"
@@ -84,7 +84,7 @@
               />
             </q-field>
           </div>
-          <div class="col-4">
+          <div class="col-12 col-md-4">
             <q-field icon="store" error-label="Ce champ est obligatoire.">
               <q-select
                 stack-label="Magasins"
@@ -95,7 +95,7 @@
               />
             </q-field>
           </div>
-          <div class="col-4">
+          <div class="col-12 col-md-4">
             <q-field icon="date range" error-label="Ce champ est obligatoire.">
               <q-datetime
                 v-model="purchase.date"
@@ -336,14 +336,14 @@
       getStores () {
         return this.$http.get('/api/stores')
           .then((stores) => {
-            this.stores = stores.body
+            this.stores = stores.data
             return this.stores
           })
       },
       getShelves () {
         return this.$http.get('/api/shelves')
           .then((shelves) => {
-            this.shelves = shelves.body
+            this.shelves = shelves.data
             return this.shelves
           })
       },
@@ -352,7 +352,7 @@
       getProducts () {
         this.$http.get('/api/products')
           .then((products) => {
-            this.products = products.body.map(resource => {
+            this.products = products.data.map(resource => {
               return {
                 label: resource.label,
                 id: resource.id,
@@ -365,7 +365,7 @@
         this.purchases = []
         this.$http.get('/api/purchases')
           .then((purchases) => {
-            purchases.body.forEach((simplePurchase) => {
+            purchases.data.forEach((simplePurchase) => {
               let purchase = {
                 id: '',
                 price: '',
@@ -383,15 +383,15 @@
               this.purchases.push(purchase)
               this.$http.get('/api/stores/' + simplePurchase.id_store)
                 .then((store) => {
-                  purchase.storeLabel = store.body[0].label
+                  purchase.storeLabel = store.data[0].label
                   this.$http.get('/api/products/' + simplePurchase.id_product)
                     .then((product) => {
-                      purchase.productLabel = product.body[0].label
+                      purchase.productLabel = product.data[0].label
                       this.$http.get('/api/purchases/' + simplePurchase.id + '/shelves/')
                         .then((shelves) => {
-                          shelves.body.forEach((shelve, index) => {
+                          shelves.data.forEach((shelve, index) => {
                             purchase.shelvesLabel = purchase.shelvesLabel.concat(shelve.label)
-                            if (index < shelves.body.length - 1) {
+                            if (index < shelves.data.length - 1) {
                               purchase.shelvesLabel = purchase.shelvesLabel.concat(' ,')
                             }
                           })
@@ -432,8 +432,8 @@
           else {
             this.$http.post('/api/products', this.product)
               .then((product) => {
-                this.purchase.product = product.body[0]
-                this.products.push(product.body[0])
+                this.purchase.product = product.data[0]
+                this.products.push(product.data[0])
                 this.purchase.shelve = this.shelvesSelected
                 this.purchase.store = this.store
                 this.$http.post('/api/purchases', this.purchase)

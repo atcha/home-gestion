@@ -22,6 +22,7 @@ export default new VueRouter({
 
   routes: [
     { path: '/', component: load('Home') },
+    { path: '/login', component: load('Login') },
     {
       path: '/achats',
       component: load('Achats'),

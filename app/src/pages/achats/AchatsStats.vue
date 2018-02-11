@@ -2,7 +2,7 @@
   <q-list separator>
     <q-list-header>Vos statistiques d'achat</q-list-header>
     <div class="row">
-      <div class="col-6">
+      <div class="col-12 col-md-6">
         <q-card>
             <q-card-title>
               Nombre de produits achetés par mois cette année
@@ -12,7 +12,7 @@
             </q-card-main>
         </q-card>
       </div>
-      <div class="col-6">
+      <div class="col-12 col-md-6">
         <q-card>
           <q-card-title>
             Produits achetés par magasins
@@ -38,7 +38,7 @@
           </q-card-main>
         </q-card>
       </div>
-      <div class="col-6">
+      <div class="col-12 col-md-6">
         <q-card>
           <q-card-title>
             Produits les plus achetés
@@ -126,14 +126,14 @@
       getBoughtProducts () {
         this.$http.get('/api/stats/products/bought')
           .then((results) => {
-            this.boughtProducts = results.body
+            this.boughtProducts = results.data
           })
       },
       fillData () {
         this.$http.get('/api/stats/products/count')
           .then((results) => {
-            let productLabel = results.body.map(nbproducts => nbproducts.label)
-            let productNb = results.body.map(nbproducts => nbproducts.nb)
+            let productLabel = results.data.map(nbproducts => nbproducts.label)
+            let productNb = results.data.map(nbproducts => nbproducts.nb)
             let color = []
 
             productNb.forEach(() => {
@@ -156,12 +156,12 @@
 
         this.$http.get('/api/stats/products/count/months')
           .then((results) => {
-            let months = results.body.map(nbproducts => nbproducts.month)
+            let months = results.data.map(nbproducts => nbproducts.month)
             let productNb = []
             let i = 0
             while (i < 12) {
               productNb[i] = 0
-              results.body.forEach(product => {
+              results.data.forEach(product => {
                 if (product.month === i + 1) {
                   productNb[i] = product.nb
                 }
@@ -197,8 +197,8 @@
           .then((results) => {
             this.nbProductsStore.labels = []
             this.nbProductsStore.nb = []
-            let storeLabel = results.body.map(results => results.label)
-            let productNb = results.body.map(results => results.nb)
+            let storeLabel = results.data.map(results => results.label)
+            let productNb = results.data.map(results => results.nb)
             let color = this.getRandomColor()
 
             this.nbProductsStore.labels.push(storeLabel)
@@ -207,7 +207,7 @@
               labels: this.nbProductsStore.labels[0],
               datasets: [
                 {
-                  label: 'Nombre d\'achats par magasin du produit ' + results.body[0].productLabel,
+                  label: 'Nombre d\'achats par magasin du produit ' + results.data[0].productLabel,
                   backgroundColor: color,
                   data: this.nbProductsStore.nb[0]
                 }

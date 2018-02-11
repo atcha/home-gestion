@@ -13,13 +13,28 @@ require(`quasar/dist/quasar.ie.${__THEME}.css`)
 import Vue from 'vue'
 import Quasar from 'quasar'
 import router from './router'
-import VueResource from 'vue-resource'
+// import VueResource from 'vue-resource'
 import Vuelidate from 'vuelidate'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import VueAuthenticate from 'vue-authenticate'
 
 Vue.config.productionTip = false
-Vue.use(VueResource)
+// Vue.use(VueResource)
 Vue.use(Quasar) // Install Quasar Framework
 Vue.use(Vuelidate)
+
+Vue.use(VueAxios, axios)
+Vue.use(VueAuthenticate, {
+  baseUrl: 'http://localhost:3000', // Your API domain
+
+  providers: {
+    github: {
+      clientId: '',
+      redirectUri: 'http://localhost:84/auth/callback' // Your client app URL
+    }
+  }
+})
 
 if (__THEME === 'mat') {
   require('quasar-extras/roboto-font')
