@@ -1,21 +1,25 @@
 <template>
   <div class="row justify-center items-center" style="min-height: calc(100vh - 50px);">
-    <q-card>
-      <q-card-title>Connexion</q-card-title>
+    <q-card class="text-center col-12 col-md-3">
+      <q-card-title class="bg-darken">
+        <object type="image/svg+xml" data="~assets/logo-home-gestion-white.svg" width="128" height="128">
+          <img src="~assets/logo-home-gestion.png" width="128" height="128" />
+        </object>
+        <h4 class="text-white">Connexion</h4>
+      </q-card-title>
       <q-card-separator/>
-      <q-card-main>
-        <q-field
-          icon="email"
-          error-label="We need a valid email"
-        >
-          <q-input float-label="Votre e-mail" v-model="email" />
+      <q-card-main class="bg-white">
+        <q-field error-label="We need a valid email" class="text-left">
+          <q-input float-label="e-mail" v-model="email" />
         </q-field>
-        <q-field icon="lock">
-          <q-input type="password" float-label="Votre mot de passe" max-length="16" v-model="password" />
+        <q-field class="text-left">
+          <q-input type="password" float-label="Mot de passe" max-length="16" v-model="password" />
         </q-field>
-        <q-btn color="primary" @click="login">Connexion</q-btn>
-        <p>Pas de compte ? <router-link to="/sign-up">Créez le maintenant.</router-link></p>
       </q-card-main>
+      <q-card-actions class="bg-grey-11 inline-block vertical-middle">
+        <q-btn color="primary" @click="login" class="full-width" style="margin-top: 15px;">Connexion</q-btn>
+        <p style="margin-top: 15px;">Pas de compte ? <router-link to="/sign-up">Créez le maintenant.</router-link></p>
+      </q-card-actions>
     </q-card>
   </div>
 </template>
@@ -26,7 +30,7 @@
     QCardMain,
     QCardTitle,
     QCardSeparator,
-    QCardMedia,
+    QCardActions,
     QInput,
     QField,
     QBtn,
@@ -40,7 +44,7 @@
       QCardMain,
       QCardTitle,
       QCardSeparator,
-      QCardMedia,
+      QCardActions,
       QInput,
       QField,
       QBtn
