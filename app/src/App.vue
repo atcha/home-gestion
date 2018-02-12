@@ -97,7 +97,15 @@
       }
     },
     mounted () {
-      this.authenticated = SessionStorage.get.item('authenticate')
+      let currentUser = firebase.auth().currentUser
+      console.log(currentUser)
+      if (SessionStorage.get.item('authenticate')) {
+        this.authenticated = SessionStorage.get.item('authenticate')
+      }
+      else if (currentUser) {
+        SessionStorage.set('authenticate', true)
+        this.authenticated = true
+      }
     },
     updated () {
       this.authenticated = SessionStorage.get.item('authenticate')

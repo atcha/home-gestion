@@ -37,12 +37,6 @@ h4
  * COMPONENTS
  */
 
-.q-tabs-head
-  padding 0!important
-  .q-tab
-    &.active
-      background-color $primary-darken
-
 // Layout
 .layout-page-container
   background $background
@@ -89,6 +83,21 @@ h4
         .q-item:focus,
         .q-item:hover
           border none
+
+// TAB
+.q-tabs
+  .q-tabs-head
+    padding 0!important
+    background $light
+    border-top 1px solid #e0e0e0
+    border-left 1px solid #e0e0e0
+    border-right 1px solid #e0e0e0
+    .q-tab
+      &.active
+        color $white
+        background-color $primary-darken
+    .q-tabs-scroller
+      color #000
 
 
 /*
