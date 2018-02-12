@@ -19,15 +19,15 @@ let storesRoutes = require('./routes/storeRoutes'),
     shelvingRoutes = require('./routes/shelvingRoutes'),
     productsRoutes = require('./routes/productsRoutes'),
     purchasesRoutes = require('./routes/purchasesRoutes'),
-    statsRoutes = require('./routes/statsRoutes'),
-    authRoutes = require('./routes/authRoutes');
+    statsRoutes = require('./routes/statsRoutes');
+    // authRoutes = require('./routes/authRoutes');
 
 storesRoutes(app);
 shelvingRoutes(app);
 productsRoutes(app);
 purchasesRoutes(app);
 statsRoutes(app);
-authRoutes(app);
+// authRoutes(app);
 
 app.listen(port);
 

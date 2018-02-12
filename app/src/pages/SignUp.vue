@@ -1,6 +1,6 @@
 <template>
   <q-card>
-    <q-card-title>Connexion</q-card-title>
+    <q-card-title>Créons un compte !</q-card-title>
     <q-card-separator/>
     <q-card-main>
       <q-field
@@ -12,11 +12,12 @@
       <q-field icon="lock">
         <q-input type="password" float-label="Votre mot de passe" max-length="16" v-model="password" />
       </q-field>
-      <q-btn color="primary" @click="login">Connexion</q-btn>
-      <p>Pas de compte ? <router-link to="/sign-up">Créez le maintenant.</router-link></p>
+      <q-btn color="primary" @click="register">S'enregistrer</q-btn>
+      <p>Ou retourner sur la <router-link to="/login">page de connexion</router-link>.</p>
     </q-card-main>
   </q-card>
 </template>
+
 <script>
   import firebase from 'firebase'
   import {
@@ -31,8 +32,9 @@
     SessionStorage
   } from 'quasar-framework'
 
+  // let usersRef = firebase.database().ref('utilisateurs')
   export default {
-    name: 'login',
+    name: 'signup',
     components: {
       QCard,
       QCardMain,
@@ -46,24 +48,24 @@
     data () {
       return {
         email: '',
-        password: '',
-        name: '',
-        access_token: null,
-        response: null
+        password: ''
       }
     },
     methods: {
-      login: function () {
-        firebase.auth().signInAndRetrieveDataWithEmailAndPassword(this.email, this.password)
+      register: function () {
+        firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
           .then(user => {
             SessionStorage.set('authenticate', true)
             this.$router.replace('/home')
-          }, err => {
+          },
+          err => {
             alert('Oops. ' + err.message)
           })
       }
     }
   }
 </script>
-<style lang="stylus">
+
+<style scoped>
+
 </style>

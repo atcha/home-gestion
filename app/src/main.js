@@ -26,6 +26,7 @@ Vue.use(Vuelidate)
 Vue.use(VueAxios, axios)
 Vue.use(VueFire)
 
+let app
 let config = {
   apiKey: 'AIzaSyD7U5ODIXRUFK5ocU7ZdGqPygURbvWfb4g',
   authDomain: 'home-gestion-app.firebaseapp.com',
@@ -45,8 +46,18 @@ import 'quasar-extras/fontawesome'
 import 'quasar-extras/animate'
 
 /* eslint-disable no-new */
-new Vue({
-  el: '#q-app',
-  router,
-  render: h => h(require('./App').default)
+// new Vue({
+//   el: '#q-app',
+//   router,
+//   render: h => h(require('./App').default)
+// })
+
+firebase.auth().onAuthStateChanged((user) => {
+  if (!app) {
+    app = new Vue({
+      el: '#q-app',
+      router,
+      render: h => h(require('./App').default)
+    })
+  }
 })

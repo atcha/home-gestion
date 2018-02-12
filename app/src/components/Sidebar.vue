@@ -2,7 +2,7 @@
   <!-- Left Side Panel -->
   <q-list no-border link>
     <q-list-header>Menu</q-list-header>
-    <q-side-link exact item to="/">
+    <q-side-link exact item to="/home">
       <q-item-side icon="home" />
       <q-item-main label="Accueil" />
     </q-side-link>
@@ -35,7 +35,7 @@
     QCollapsible
   } from 'quasar-framework'
 
-export default {
+  export default {
     name: 'SideBar',
     components: {
       QList,
@@ -50,5 +50,5 @@ export default {
         boughtOpened: false
       }
     }
-}
+  }
 </script>
