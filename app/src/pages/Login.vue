@@ -5,7 +5,7 @@
         <object type="image/svg+xml" data="~assets/logo-home-gestion-white.svg" width="128" height="128">
           <img src="~assets/logo-home-gestion.png" width="128" height="128" />
         </object>
-        <h4 class="text-white">Connexion</h4>
+        <h4 class="text-white">Connectez-vous</h4>
       </q-card-title>
       <q-card-separator/>
       <q-card-main class="bg-white">
@@ -17,7 +17,7 @@
         </q-field>
       </q-card-main>
       <q-card-actions class="bg-grey-11 inline-block vertical-middle">
-        <q-btn color="primary" @click="login" class="full-width" style="margin-top: 15px;">Connexion</q-btn>
+        <q-btn color="secondary" @click="login" class="full-width" style="margin-top: 15px;">Connexion</q-btn>
         <p style="margin-top: 15px;">Pas de compte ? <router-link to="/sign-up">Créez le maintenant.</router-link></p>
       </q-card-actions>
     </q-card>
