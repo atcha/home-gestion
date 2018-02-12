@@ -32,14 +32,10 @@ h4
   color $tertiary
 
 
+
 /*
  * COMPONENTS
  */
-
-// Toolbar
-.q-toolbar
-  > .q-btn
-    margin-right 1.2rem
 
 .q-tabs-head
   padding 0!important
@@ -47,7 +43,52 @@ h4
     &.active
       background-color $primary-darken
 
-
+// Layout
+.layout-page-container
+  background $background
+.layout-header
+  box-shadow none
+  .q-toolbar
+    background $light
+    color $dark
+    border-bottom 1px solid $grey-5
+    > .q-btn
+      margin-right 1.2rem
+.layout-aside-left
+  &.fixed
+    &.on-layout
+      box-shadow none
+  .q-list
+    .q-list-header
+      line-height 25px
+      background-color $primary
+      display flex
+      justify-content flex-start
+      align-items center
+      color $white
+    .q-item
+      .q-item-section
+        color: $white
+        .q-item-sublabel
+          color: $grey-5
+    .q-item.active,
+    .q-item.router-link-active,
+    .q-item:focus,
+    .q-item:hover
+      background-color $background
+      border-left 6px solid $secondary
+      transition all .2s ease-out
+      .q-item-section
+        color: $grey-10
+        .q-item-sublabel
+          color: $grey-8
+    .q-collapsible
+      .q-collapsible-sub-item
+        padding 0 0 16px 6px
+        .q-item.router-link-active,
+        .q-item:focus,
+        .q-item:hover
+          border none
 
 
 /*

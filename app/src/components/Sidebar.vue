@@ -1,6 +1,6 @@
 <template>
   <!-- Left Side Panel -->
-  <q-list no-border link>
+  <q-list no-border link inset-delimiter>
     <q-list-header>Menu</q-list-header>
     <q-side-link exact item to="/home">
       <q-item-side icon="home" />
@@ -10,15 +10,15 @@
       <div class="scroll" style="max-height: 400px">
         <q-side-link item to="/achats/add">
           <q-item-side icon="add" />
-          <q-item-main label="Ajouter des achats" />
+          <q-item-main label="Achats" sublabel="Ajout, modification, liste des achats"/>
         </q-side-link>
         <q-side-link item to="/achats/stats">
           <q-item-side icon="pie chart" />
-          <q-item-main label="Statistiques des achats" />
+          <q-item-main label="Statistiques" sublabel="Statistiques de vos achats"/>
         </q-side-link>
         <q-side-link item to="/achats/config">
           <q-item-side icon="build" />
-          <q-item-main label="Configurer les magasins/rayons" />
+          <q-item-main label="Configuration" sublabel="Ajout, modification, liste des magasins et rayons" />
         </q-side-link>
       </div>
     </q-collapsible>

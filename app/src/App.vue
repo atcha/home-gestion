@@ -3,9 +3,9 @@
   <div id="q-app">
     <header></header>
     <main>
-      <q-layout ref="layout" view="hHh Lpr fff">
+      <q-layout ref="layout" view="hHh Lpr fff" :left-class="{'bg-primary': true}">
         <!-- Header -->
-        <q-toolbar slot="header" color="dark">
+        <q-toolbar slot="header">
           <q-btn v-if="authenticated" flat @click="$refs.layout.toggleLeft()">
             <q-icon name="menu" />
           </q-btn>
