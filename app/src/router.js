@@ -81,8 +81,12 @@ const vueRouter = new VueRouter({
 vueRouter.beforeEach((to, from, next) => {
   let currentUser = firebase.auth().currentUser
   let requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  if (requiresAuth && !currentUser) next('/login')
-  else if (!requiresAuth && currentUser) next('/home')
+  let verifiedMail = false
+  if (currentUser && currentUser.emailVerified) {
+    verifiedMail = true
+  }
+  if (requiresAuth && (!currentUser || !verifiedMail)) next('/login')
+  else if (!requiresAuth && currentUser && verifiedMail) next('/home')
   else next()
 })
 

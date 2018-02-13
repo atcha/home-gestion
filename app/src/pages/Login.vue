@@ -71,7 +71,7 @@
               this.$router.replace('/home')
             }
             else {
-              Alert.create({html: 'Votre e-mail n\'est pas vérifié !\n vous devez cliquer sur le lien de vérification dans l\'e-mail envoyé à votre adresse'})
+              Alert.create({html: 'Votre e-mail n\'est pas vérifié ! <br /> vous devez cliquer sur le lien de vérification dans l\'e-mail envoyé à votre adresse'})
             }
           }, err => {
             alert('Oops. ' + err.message)

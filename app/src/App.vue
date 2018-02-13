@@ -98,11 +98,10 @@
     },
     mounted () {
       let currentUser = firebase.auth().currentUser
-      console.log(currentUser)
       if (SessionStorage.get.item('authenticate')) {
         this.authenticated = SessionStorage.get.item('authenticate')
       }
-      else if (currentUser) {
+      else if (currentUser && currentUser.emailVerified) {
         SessionStorage.set('authenticate', true)
         this.authenticated = true
       }

@@ -41,7 +41,8 @@
     QCardActions,
     QInput,
     QField,
-    QBtn
+    QBtn,
+    Dialog
   } from 'quasar-framework'
 
   export default {
@@ -82,7 +83,9 @@
             this.$http.post('/api/users', this.user)
               .then((response) => {
                 this.senEmailVerification()
-                this.$router.replace('/login')
+                setTimeout(() => {
+                  this.$router.replace('/login')
+                }, 3000)
               })
           },
           err => {
@@ -91,8 +94,18 @@
       },
       senEmailVerification: function () {
         firebase.auth().currentUser.sendEmailVerification()
-          .then(function () {
-            console.log('Email Verification Sent!')
+          .then(() => {
+            Dialog.create({
+              title: '',
+              message: 'Un e-mail de verification a été envoyé à votre adresse. <br /> Pour pouvoir vous connecter merci de cliquer sur le lien de verification',
+              buttons: [
+                {
+                  label: 'Ok',
+                  handler () {
+                  }
+                }
+              ]
+            })
           })
       }
     }
