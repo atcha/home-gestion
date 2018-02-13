@@ -22,7 +22,7 @@
             <q-icon name="account_box" />
             <q-popover ref="popover">
               <q-list link>
-                <q-item @click="$refs.popover.close()">
+                <q-item to="/account">
                   <q-item-side left icon="face" />
                   <q-item-main label="Mon compte" />
                 </q-item>

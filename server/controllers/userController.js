@@ -21,7 +21,7 @@ exports.create_a_user = (req, res) => {
 };
 
 exports.read_a_user = (req, res) => {
-    db.query('SELECT * FROM `store` WHERE id = ?', req.params.storeId, (error, results, fields) => {
+    db.query('SELECT * FROM `user` WHERE uid = ?', req.params.uid, (error, results, fields) => {
         if(error) {
             res.send(error);
         } else {
@@ -31,8 +31,7 @@ exports.read_a_user = (req, res) => {
 };
 
 exports.update_a_user = (req, res) => {
-    console.log(req.body);
-    db.query('UPDATE user set ? WHERE id = ?',[req.body, req.params.storeId], (error, results) => {
+    db.query('UPDATE user set ? WHERE uid = ?',[req.body, req.params.uid], (error, results) => {
         if (error) {
             res.send(error);
         } else {
@@ -43,7 +42,7 @@ exports.update_a_user = (req, res) => {
 
 
 exports.delete_a_user = (req, res) => {
-    db.query('DELETE FROM `user` WHERE id = ?', req.params.storeId, (error, results, fields) => {
+    db.query('DELETE FROM `user` WHERE uid = ?', req.params.uid, (error, results, fields) => {
         if (error) {
             res.send(error);
         } else {

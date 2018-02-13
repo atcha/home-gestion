@@ -74,6 +74,14 @@ const vueRouter = new VueRouter({
           }
         }
       ]
+    },
+    {
+      path: '/account',
+      name: 'Account',
+      component: load('user/Account'),
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 })
