@@ -11,11 +11,17 @@ exports.list_all_users = (req, res) => {
 };
 
 exports.create_a_user = (req, res) => {
-    db.query('INSERT INTO `user` SET ?', req.body, (error, result, fields) => {
+    db.query('INSERT INTO `user` SET ?', req.body, (error, result) => {
         if(error) {
             res.send(error.sqlMessage);
         } else {
-            res.json({ message: 'Store successfully created' });
+            db.query('SELECT * FROM `user` WHERE id = ?', result.insertId, (error, results) => {
+                if(error) {
+                    res.send(error);
+                } else {
+                    res.json(results);
+                }
+            });
         }
     });
 };

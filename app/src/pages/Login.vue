@@ -35,6 +35,8 @@
       </q-card-main>
       <q-card-actions class="bg-grey-11 inline-block vertical-middle">
         <q-btn color="secondary" @click="login" class="full-width" style="margin-top: 15px;">Connexion</q-btn>
+        <q-btn color="google" icon="fa-google" @click="googleLogin" class="full-width" style="margin-top: 15px;">Connexion</q-btn>
+        <q-btn color="facebook" icon="fa-facebook" @click="facebookLogin" class="full-width" style="margin-top: 15px;">Connexion</q-btn>
         <p style="margin-top: 15px;">Pas de compte ? <router-link to="/sign-up">Créez le maintenant.</router-link></p>
       </q-card-actions>
     </q-card>
@@ -83,7 +85,7 @@
         user: {
           uid: '',
           pseudo: '',
-          mail: '',
+          email: '',
           profile_picture: ''
         }
       }
@@ -94,23 +96,27 @@
     },
     methods: {
       login: function () {
+        // Check fields and send error
         this.$v.email.$touch()
+        this.$v.password.$touch()
         if (this.$v.email.$error) {
           Toast.create('E-mail non valide.')
           return
         }
-        this.$v.password.$touch()
         if (this.$v.password.$error) {
           Toast.create('Mot de passe obligatoire.')
           return
         }
+        /**
+         * Firebase signin with email and password
+         * Put user infos into SessionStorage then redirect to home page
+         */
         firebase.auth().signInAndRetrieveDataWithEmailAndPassword(this.email, this.password)
           .then(user => {
             if (user.user.emailVerified === true) {
               SessionStorage.set('authenticate', true)
               this.$http.get('/api/users/' + user.user.uid)
                 .then((currentUser) => {
-                  console.log(currentUser)
                   this.user.uid = user.user.uid
                   this.user.pseudo = currentUser.data[0].pseudo
                   this.user.mail = currentUser.data[0].email
@@ -125,6 +131,90 @@
           }, err => {
             console.log(err)
             Alert.create({html: 'Oops. ' + err.message})
+          })
+      },
+      googleLogin: function () {
+        /**
+         * Google signin
+         */
+        let provider = new firebase.auth.GoogleAuthProvider()
+        provider.addScope('https://www.googleapis.com/auth/contacts.readonly')
+        firebase.auth().useDeviceLanguage()
+        firebase.auth().signInWithPopup(provider)
+          .then((result) => {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            // let token = result.credential.accessToken
+            // The signed-in user info.
+            let user = result.user
+            this.user.uid = user.uid
+            this.user.pseudo = user.displayName
+            this.user.email = user.email
+            this.user.profile_picture = user.photoURL
+            console.log(user)
+            this.$http.get('/api/users/' + user.uid)
+              .then((currentUser) => {
+                if (currentUser.data[0] === undefined) {
+                  this.$http.post('/api/users', this.user)
+                    .then(() => {})
+                }
+              })
+
+            SessionStorage.set('authenticate', true)
+            SessionStorage.set('currentUser', this.user)
+            this.$router.replace('/home')
+            // ...
+          }).catch((error) => {
+            // Handle Errors here.
+            // let errorCode = error.code
+            let errorMessage = error.message
+            console.log(errorMessage)
+            // The email of the user's account used.
+            // let email = error.email
+            // The firebase.auth.AuthCredential type that was used.
+            // let credential = error.credential
+            // ...
+          })
+      },
+      facebookLogin: function () {
+        /**
+         * Facebook signin
+         */
+        let provider = new firebase.auth.FacebookAuthProvider()
+        provider.addScope('https://www.googleapis.com/auth/contacts.readonly')
+        firebase.auth().useDeviceLanguage()
+        firebase.auth().signInWithPopup(provider)
+          .then((result) => {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            // let token = result.credential.accessToken
+            // The signed-in user info.
+            let user = result.user
+            this.user.uid = user.uid
+            this.user.pseudo = user.displayName
+            this.user.email = user.email
+            this.user.profile_picture = user.photoURL
+            console.log(user)
+            this.$http.get('/api/users/' + user.uid)
+              .then((currentUser) => {
+                if (currentUser.data[0] === undefined) {
+                  this.$http.post('/api/users', this.user)
+                    .then(() => {})
+                }
+              })
+
+            SessionStorage.set('authenticate', true)
+            SessionStorage.set('currentUser', this.user)
+            this.$router.replace('/home')
+            // ...
+          }).catch((error) => {
+            // Handle Errors here.
+            // let errorCode = error.code
+            let errorMessage = error.message
+            console.log(errorMessage)
+            // The email of the user's account used.
+            // let email = error.email
+            // The firebase.auth.AuthCredential type that was used.
+            // let credential = error.credential
+            // ...
           })
       },
       sendRecoverPassword: function () {
