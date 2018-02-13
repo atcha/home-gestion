@@ -34,6 +34,8 @@
     QInput,
     QField,
     QBtn,
+    Alert,
+    QAlert,
     SessionStorage
   } from 'quasar-framework'
 
@@ -47,7 +49,9 @@
       QCardActions,
       QInput,
       QField,
-      QBtn
+      QBtn,
+      Alert,
+      QAlert
     },
     data () {
       return {
@@ -62,8 +66,13 @@
       login: function () {
         firebase.auth().signInAndRetrieveDataWithEmailAndPassword(this.email, this.password)
           .then(user => {
-            SessionStorage.set('authenticate', true)
-            this.$router.replace('/home')
+            if (user.user.emailVerified === true) {
+              SessionStorage.set('authenticate', true)
+              this.$router.replace('/home')
+            }
+            else {
+              Alert.create({html: 'Votre e-mail n\'est pas vérifié !\n vous devez cliquer sur le lien de vérification dans l\'e-mail envoyé à votre adresse'})
+            }
           }, err => {
             alert('Oops. ' + err.message)
           })

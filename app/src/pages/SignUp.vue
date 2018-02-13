@@ -12,14 +12,14 @@
         <q-field class="text-left">
           <q-input float-label="Pseudo" v-model="pseudo" />
         </q-field>
-        <q-field error-label="We need a valid email" class="text-left">
+        <q-field error-label="Votre e-mail n'est pas valide" class="text-left">
           <q-input float-label="E-mail" v-model="email" />
         </q-field>
         <q-field class="text-left">
           <q-input type="password" float-label="Mot de passe" max-length="16" v-model="password" />
         </q-field>
         <q-field class="text-left">
-          <q-input type="password" float-label="Confirmer mot de passe" max-length="16" v-model="password" />
+          <q-input type="password" float-label="Confirmer mot de passe" max-length="16" v-model="confirmpassword" />
         </q-field>
       </q-card-main>
       <q-card-actions class="bg-grey-11 inline-block vertical-middle">
@@ -41,11 +41,9 @@
     QCardActions,
     QInput,
     QField,
-    QBtn,
-    SessionStorage
+    QBtn
   } from 'quasar-framework'
 
-  // let usersRef = firebase.database().ref('utilisateurs')
   export default {
     name: 'signup',
     components: {
@@ -63,18 +61,38 @@
       return {
         pseudo: '',
         email: '',
-        password: ''
+        password: '',
+        confirmpassword: '',
+        user: {
+          uid: '',
+          pseudo: '',
+          email: '',
+          profile_picture: '~assets/users/nobody_m.original.jpg'
+        }
       }
     },
     methods: {
       register: function () {
         firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
           .then(user => {
-            SessionStorage.set('authenticate', true)
-            this.$router.replace('/home')
+            console.log(user)
+            this.user.uid = user.uid
+            this.user.pseudo = this.pseudo
+            this.user.email = this.email
+            this.$http.post('/api/users', this.user)
+              .then((response) => {
+                this.senEmailVerification()
+                this.$router.replace('/login')
+              })
           },
           err => {
             alert('Oops. ' + err.message)
+          })
+      },
+      senEmailVerification: function () {
+        firebase.auth().currentUser.sendEmailVerification()
+          .then(function () {
+            console.log('Email Verification Sent!')
           })
       }
     }
