@@ -1,35 +1,32 @@
 <template>
   <div class="home container">
-    <h4>Bienvenue sur l'application de gestion maison</h4>
-    <ul>
-      <li><a href="http://quasar-framework.org" target="_blank" rel="noopener">Docs</a></li>
-      <li><a href="http://forum.quasar-framework.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://gitter.im/quasarframework/Lobby" target="_blank" rel="noopener">Gitter Chat</a></li>
-      <li><a href="https://twitter.com/quasarframework" target="_blank" rel="noopener">Twitter</a></li>
-    </ul>
+    <h5>Bienvenue, {{ user.pseudo }}</h5>
+    <p class="caption">Cette application te permet de gérer tes achats et tes budgets personnels ou de groupe.</p>
+    <p class="caption">Si tu as besoin d'informations n'hésite pas à consulter l'aide disponible en haut à droite de l'écran.</p>
+
   </div>
 </template>
 
 <script>
-export default {
-  name: 'home'
-}
+  import {
+    SessionStorage
+  } from 'quasar-framework'
+
+  export default {
+    name: 'home',
+    data () {
+      return {
+        user: {}
+      }
+    },
+    mounted () {
+      if (SessionStorage.get.item('currentUser')) {
+        this.user = SessionStorage.get.item('currentUser')
+      }
+    }
+  }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus">
-@import '~variables'
-
-.home
-  margin-top 50px
-  a
-    color #35495E
-
-ul
-  list-style-type none
-  padding 0
-
-li
-  display inline-block
-  margin 0 10px
 </style>

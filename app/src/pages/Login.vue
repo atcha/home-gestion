@@ -148,7 +148,7 @@
             let user = result.user
             this.user.uid = user.uid
             this.user.pseudo = user.displayName
-            this.user.email = user.email
+            this.user.mail = user.email
             this.user.profile_picture = user.photoURL
             console.log(user)
             this.$http.get('/api/users/' + user.uid)
@@ -190,9 +190,8 @@
             let user = result.user
             this.user.uid = user.uid
             this.user.pseudo = user.displayName
-            this.user.email = user.email
+            this.user.mail = user.email
             this.user.profile_picture = user.photoURL
-            console.log(user)
             this.$http.get('/api/users/' + user.uid)
               .then((currentUser) => {
                 if (currentUser.data[0] === undefined) {

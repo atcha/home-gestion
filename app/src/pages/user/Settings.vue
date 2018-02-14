@@ -24,7 +24,7 @@
   } from 'quasar-framework'
 
   export default {
-    name: 'account',
+    name: 'usersettings',
     components: {
       QTabs,
       QTab,

@@ -42,6 +42,45 @@ const vueRouter = new VueRouter({
       component: load('SignUp')
     },
     {
+      path: '/account',
+      name: 'Account',
+      component: load('user/Account'),
+      meta: {
+        requiresAuth: true
+      },
+      children: [
+        {
+          path: 'user-settings',
+          name: 'UserSettings',
+          component: load('user/Settings'),
+          meta: {
+            requiresAuth: true
+          }
+        },
+        {
+          path: 'user-stats',
+          name: 'UserStats',
+          component: load('user/Stats'),
+          meta: {
+            requiresAuth: true
+          }
+        },
+        {
+          path: 'user-purchases',
+          name: 'UserPurchases',
+          component: load('user/Purchases'),
+          meta: {
+            requiresAuth: true
+          }
+        }
+      ]
+    },
+    {
+      path: '/help',
+      name: 'Help',
+      component: load('Help')
+    },
+    {
       path: '/achats',
       name: 'Achats',
       component: load('Achats'),
@@ -74,14 +113,6 @@ const vueRouter = new VueRouter({
           }
         }
       ]
-    },
-    {
-      path: '/account',
-      name: 'Account',
-      component: load('user/Account'),
-      meta: {
-        requiresAuth: true
-      }
     }
   ]
 })
@@ -90,11 +121,16 @@ vueRouter.beforeEach((to, from, next) => {
   let currentUser = firebase.auth().currentUser
   let requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   let verifiedMail = false
+  let global = false
   if (currentUser && currentUser.emailVerified) {
     verifiedMail = true
   }
-  if (requiresAuth && (!currentUser || !verifiedMail)) next('/login')
-  else if (!requiresAuth && currentUser && verifiedMail) next('/home')
+  console.log(to)
+  if (to.path === '/help') {
+    global = true
+  }
+  if (requiresAuth && (!currentUser || !verifiedMail) && !global) next('/login')
+  else if (!requiresAuth && currentUser && verifiedMail && !global) next('/home')
   else next()
 })
 

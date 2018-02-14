@@ -20,18 +20,29 @@
           </q-toolbar-title>
           <q-btn v-if="authenticated" flat>
             <q-icon name="account_box" />
-            <q-popover ref="popover">
+            <q-popover ref="popover" class="user-popover">
               <q-list link>
-                <q-item to="/account">
-                  <q-item-side left icon="face" />
+                <q-item to="/account/user-purchases">
+                  <q-item-side left icon="fa-shopping-bag" />
+                  <q-item-main label="Mes achats" />
+                </q-item>
+                <q-item to="/account/user-stats">
+                  <q-item-side left icon="pie chart" />
+                  <q-item-main label="Statistiques" />
+                </q-item>
+                <q-item to="/account/user-settings">
+                  <q-item-side left icon="fa-user" />
                   <q-item-main label="Mon compte" />
                 </q-item>
                 <q-item @click="logout">
-                  <q-item-side left icon="power settings new" />
+                  <q-item-side left icon="fa-sign-out" />
                   <q-item-main label="Déconnexion" />
                 </q-item>
               </q-list>
             </q-popover>
+          </q-btn>
+          <q-btn @click="$router.push('/help')" flat>
+            <q-icon name="help" />
           </q-btn>
         </q-toolbar>
         <sidebar v-if="authenticated" slot="left" />
@@ -84,7 +95,8 @@
     },
     data () {
       return {
-        authenticated: false
+        authenticated: false,
+        user: {}
       }
     },
     methods: {
@@ -104,6 +116,16 @@
       else if (currentUser && currentUser.emailVerified) {
         SessionStorage.set('authenticate', true)
         this.authenticated = true
+      }
+      if (!SessionStorage.get.item('currentUser')) {
+        this.$http.get('/api/users/' + currentUser.uid)
+          .then((user) => {
+            this.user.uid = currentUser.uid
+            this.user.pseudo = user.data[0].pseudo
+            this.user.mail = user.data[0].email
+            this.user.profile_picture = user.data[0].profile_picture
+            SessionStorage.set('currentUser', this.user)
+          })
       }
     },
     updated () {

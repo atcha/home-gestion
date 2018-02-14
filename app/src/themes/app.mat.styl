@@ -20,7 +20,9 @@
 // Layout
 main
   .container
-    margin 0 15px
+    margin 15px
+    padding 15px
+    background-color $white
 
 
 header
@@ -119,3 +121,22 @@ h4
   background-color $github
 .bg-google
   background-color $google
+
+
+// User popover
+.user-popover
+  .q-list
+    padding 0
+    .q-item
+      border-bottom 1px solid $grey-4
+      transition background-color .2s linear
+      &:last-child
+        border-bottom none
+      &.active
+      &.router-link-active
+      &:focus
+      &:hover
+        background-color $secondary
+        color $white
+        .q-item-side
+          color $white
