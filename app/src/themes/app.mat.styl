@@ -33,8 +33,14 @@ header
 h4
   color $tertiary
 
+ul
+  list-style none
+  margin 0
+  padding 0
+
 .bg-darken
   background-color $darkbackground
+
 
 /*
  * COMPONENTS
@@ -49,8 +55,18 @@ h4
     background $light
     color $dark
     border-bottom 1px solid $grey-5
-    > .q-btn
-      margin-right 1.2rem
+    padding-top 0
+    padding-bottom 0
+    padding-right 0
+    .q-btn
+      width 45px
+      height 45px
+      transition all .2s ease-in-out
+    .burger-icon
+      position relative
+      cursor pointer
+      .q-icon
+        margin-right 0
 .layout-aside-left
   &.fixed
     &.on-layout
@@ -105,7 +121,7 @@ h4
 // BTN
 .q-btn
   box-shadow none
-  transition .3s box-shadow ease-in-out
+  transition .2s box-shadow ease-in-out
   &:hover
     box-shadow: 0 1px 5px rgba(0,0,0,0.2), 0 2px 2px rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12);
 
@@ -122,6 +138,25 @@ h4
 .bg-google
   background-color $google
 
+// Right menu header
+.layout-header
+  .q-toolbar
+    .top-menu-right
+      display flex
+      li
+        border-left 1px solid $border
+        .q-btn
+          height 100%
+          .q-focus-helper
+            border-radius 0
+          &:hover
+            .q-focus-helper
+              background-color $secondary
+              opacity 1
+              z-index 50
+            .q-btn-inner
+              z-index 100
+              color $white
 
 // User popover
 .user-popover
