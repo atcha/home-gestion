@@ -125,7 +125,6 @@ vueRouter.beforeEach((to, from, next) => {
   if (currentUser && currentUser.emailVerified) {
     verifiedMail = true
   }
-  console.log(to)
   if (to.path === '/help') {
     global = true
   }

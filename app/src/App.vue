@@ -145,7 +145,7 @@
           .then((user) => {
             this.user.uid = currentUser.uid
             this.user.pseudo = user.data[0].pseudo
-            this.user.mail = user.data[0].email
+            this.user.email = user.data[0].email
             this.user.profile_picture = user.data[0].profile_picture
             SessionStorage.set('currentUser', this.user)
           })

@@ -20,10 +20,10 @@
             <q-field error-label="Votre e-mail n'est pas valide" class="text-left">
               <q-input
                 float-label="E-mail"
-                v-model="user.mail"
+                v-model="user.email"
               />
             </q-field>
-            <q-btn color="secondary" @click="" class="full-width" style="margin-top: 15px;">Modifier</q-btn>
+            <q-btn color="secondary" @click="updateInfos" class="full-width" style="margin-top: 15px;">Modifier vos informations</q-btn>
             <q-field error-label="Le mot de passe est obligatoire" class="text-left">
               <q-input
                 type="password"
@@ -40,6 +40,7 @@
                 v-model="confirmpassword"
               />
             </q-field>
+            <q-btn color="secondary" @click="updatePassword" class="full-width" style="margin-top: 15px;">Changer votre mot de passe</q-btn>
           </div>
         </div>
       </q-tab-pane>
@@ -49,13 +50,16 @@
 </template>
 
 <script>
+  import firebase from 'firebase'
   import {
     QTabs,
     QTab,
     QTabPane,
     QInput,
     QBtn,
-    SessionStorage
+    QField,
+    SessionStorage,
+    Toast
   } from 'quasar-framework'
 
   export default {
@@ -65,20 +69,75 @@
       QTab,
       QTabPane,
       QBtn,
-      QInput
+      QInput,
+      QField
     },
     data () {
       return {
         user: {
           pseudo: '',
-          mail: ''
+          email: ''
         },
-        url: ''
+        url: '',
+        password: '',
+        confirmpassword: ''
       }
     },
     mounted () {
       this.user = SessionStorage.get.item('currentUser')
-      console.log(this.user)
+    },
+    methods: {
+      updateInfos: function () {
+        let fireUser = firebase.auth().currentUser
+        let updateProfilePromise = new Promise((resolve, reject) => {
+          if (fireUser.displayName !== this.user.pseudo) {
+            fireUser.updateProfile({
+              displayName: this.user.pseudo
+            }).then(() => {
+              resolve(true)
+            }).catch((error) => {
+              reject(error)
+            })
+          }
+          else {
+            resolve(false)
+          }
+        })
+        let updateEmailPromise = new Promise((resolve, reject) => {
+          if (fireUser.email !== this.user.email) {
+            fireUser.updateEmail(this.user.email)
+              .then(() => {
+                resolve(true)
+              })
+              .catch((error) => {
+                console.log('ok')
+                reject(error)
+              })
+          }
+          else {
+            resolve(false)
+          }
+        })
+
+        Promise.all([updateProfilePromise, updateEmailPromise])
+          .then((results) => {
+            if (results[0] !== false || results[1] !== false) {
+              this.$http.put('/api/users/' + fireUser.uid, this.user)
+                .then(() => {
+                  SessionStorage.set('currentUser', this.user)
+                  Toast.create({
+                    html: 'Informations modifiées avec succès',
+                    timeout: 2500
+                  })
+                })
+            }
+          }).catch(reason => {
+            console.log(reason)
+          })
+      },
+      updatePassword: function () {
+        console.log('ok')
+      }
     }
   }
 </script>

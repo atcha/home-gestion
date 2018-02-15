@@ -8,7 +8,7 @@
       <q-tab-pane name="resume">
         <p><img v-bind:src="user.profile_picture" width="40" height="40"></p>
         <p>{{ user.pseudo }}</p>
-        <p>{{ user.mail }}</p>
+        <p>{{ user.email }}</p>
       </q-tab-pane>
       <q-tab-pane name="modify">Alarms tab</q-tab-pane>
     </q-tabs>
