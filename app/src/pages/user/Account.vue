@@ -88,6 +88,7 @@
     },
     methods: {
       updateInfos: function () {
+        // TODO: verify infos with vuelidate
         let fireUser = firebase.auth().currentUser
         let updateProfilePromise = new Promise((resolve, reject) => {
           if (fireUser.displayName !== this.user.pseudo) {
@@ -136,7 +137,18 @@
           })
       },
       updatePassword: function () {
-        console.log('ok')
+        // TODO: verify password with vuelidate
+        var user = firebase.auth().currentUser;
+
+        user.updatePassword(this.password)
+          .then(function() {
+            Toast.create({
+              html: 'Mot de passe mis à jour',
+              timeout: 2500
+            })
+          }).catch(function(error) {
+            console.log(error)
+          });
       }
     }
   }
