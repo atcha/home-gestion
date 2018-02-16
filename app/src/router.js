@@ -121,15 +121,19 @@ vueRouter.beforeEach((to, from, next) => {
   let currentUser = firebase.auth().currentUser
   let requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   let verifiedMail = false
+  let connectedFromApi = false
   let global = false
-  if (currentUser && currentUser.emailVerified) {
+  if (currentUser && (currentUser.providerData[0].providerId === 'facebook.com' || currentUser.providerData[0].providerId === 'google.com')) {
+    connectedFromApi = true
+  }
+  else if (currentUser && currentUser.emailVerified) {
     verifiedMail = true
   }
   if (to.path === '/help') {
     global = true
   }
-  if (requiresAuth && (!currentUser || !verifiedMail) && !global) next('/login')
-  else if (!requiresAuth && currentUser && verifiedMail && !global) next('/home')
+  if (requiresAuth && (!currentUser || (connectedFromApi === false && !verifiedMail)) && !global) next('/login')
+  else if (!requiresAuth && currentUser && (verifiedMail || connectedFromApi) && !global) next('/home')
   else next()
 })
 

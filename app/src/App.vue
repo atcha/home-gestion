@@ -140,7 +140,7 @@
         SessionStorage.set('authenticate', true)
         this.authenticated = true
       }
-      if (!SessionStorage.get.item('currentUser')) {
+      if (currentUser && !SessionStorage.get.item('currentUser')) {
         this.$http.get('/api/users/' + currentUser.uid)
           .then((user) => {
             this.user.uid = currentUser.uid

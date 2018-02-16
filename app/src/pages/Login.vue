@@ -22,6 +22,7 @@
             float-label="Mot de passe"
             max-length="16"
             v-model="password"
+            @keyup.enter="login"
             @blur="$v.password.$touch"
             :error="$v.password.$error" />
           <a @click="openModalPassword = true" class="inline-block" style="margin-top: 15px;">J'ai oublié mon mot de passe.</a>
@@ -119,7 +120,7 @@
                 .then((currentUser) => {
                   this.user.uid = user.user.uid
                   this.user.pseudo = currentUser.data[0].pseudo
-                  this.user.mail = currentUser.data[0].email
+                  this.user.email = currentUser.data[0].email
                   this.user.profile_picture = currentUser.data[0].profile_picture
                   SessionStorage.set('currentUser', this.user)
                 })
@@ -150,19 +151,20 @@
             this.user.pseudo = user.displayName
             this.user.email = user.email
             this.user.profile_picture = user.photoURL
-            console.log(user)
             this.$http.get('/api/users/' + user.uid)
               .then((currentUser) => {
                 if (currentUser.data[0] === undefined) {
                   this.$http.post('/api/users', this.user)
                     .then(() => {})
                 }
+                else {
+                  this.user = currentUser.data[0]
+                }
               })
 
             SessionStorage.set('authenticate', true)
             SessionStorage.set('currentUser', this.user)
             this.$router.replace('/home')
-            // ...
           }).catch((error) => {
             // Handle Errors here.
             // let errorCode = error.code
@@ -180,7 +182,7 @@
          * Facebook signin
          */
         let provider = new firebase.auth.FacebookAuthProvider()
-        provider.addScope('https://www.googleapis.com/auth/contacts.readonly')
+        provider.addScope('public_profile')
         firebase.auth().useDeviceLanguage()
         firebase.auth().signInWithPopup(provider)
           .then((result) => {
@@ -198,12 +200,13 @@
                   this.$http.post('/api/users', this.user)
                     .then(() => {})
                 }
+                else {
+                  this.user = currentUser.data[0]
+                }
               })
-
             SessionStorage.set('authenticate', true)
             SessionStorage.set('currentUser', this.user)
             this.$router.replace('/home')
-            // ...
           }).catch((error) => {
             // Handle Errors here.
             // let errorCode = error.code

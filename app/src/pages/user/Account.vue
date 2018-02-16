@@ -11,25 +11,43 @@
             <img v-bind:src="user.profile_picture" class="profilePicture" width="200" height="200">
           </div>
           <div class="col-12 col-md-7">
-            <q-field error-label="Le pseudo est obligatoire" class="text-left">
+            <q-field class="text-left">
               <q-input
                 float-label="Pseudo"
                 v-model="user.pseudo"
+                @keyup.enter="updateInfos"
               />
             </q-field>
             <q-field error-label="Votre e-mail n'est pas valide" class="text-left">
               <q-input
                 float-label="E-mail"
                 v-model="user.email"
+                @keyup.enter="updateInfos"
+                @blur="$v.user.email.$touch"
+                :error="$v.user.email.$error"
               />
             </q-field>
             <q-btn color="secondary" @click="updateInfos" class="full-width" style="margin-top: 15px;">Modifier vos informations</q-btn>
-            <q-field error-label="Le mot de passe est obligatoire" class="text-left">
+            <q-field error-label="L'ancien mot de passe est obligatoire" class="text-left">
+              <q-input
+                type="password"
+                float-label="Ancien mot de passe"
+                max-length="16"
+                v-model="oldpassword"
+                @keyup.enter="updatePassword"
+                @blur="$v.oldpassword.$touch"
+                :error="$v.oldpassword.$error"
+              />
+            </q-field>
+            <q-field error-label="Le mot de passe doit faire minimum 6 charactères" class="text-left">
               <q-input
                 type="password"
                 float-label="Mot de passe"
                 max-length="16"
                 v-model="password"
+                @keyup.enter="updatePassword"
+                @blur="$v.password.$touch"
+                :error="$v.password.$error"
               />
             </q-field>
             <q-field error-label="Le mot de passe n'est pas identique" class="text-left">
@@ -38,6 +56,9 @@
                 float-label="Confirmer mot de passe"
                 max-length="16"
                 v-model="confirmpassword"
+                @keyup.enter="updatePassword"
+                @blur="$v.confirmpassword.$touch"
+                :error="$v.confirmpassword.$error"
               />
             </q-field>
             <q-btn color="secondary" @click="updatePassword" class="full-width" style="margin-top: 15px;">Changer votre mot de passe</q-btn>
@@ -51,6 +72,7 @@
 
 <script>
   import firebase from 'firebase'
+  import { required, email, sameAs, minLength } from 'vuelidate/lib/validators'
   import {
     QTabs,
     QTab,
@@ -79,19 +101,35 @@
           email: ''
         },
         url: '',
+        oldpassword: '',
         password: '',
         confirmpassword: ''
       }
+    },
+    validations: {
+      user: {
+        email: { required, email }
+      },
+      oldpassword: { required },
+      password: { minLength: minLength(6) },
+      confirmpassword: { sameAsPassword: sameAs('password') }
     },
     mounted () {
       this.user = SessionStorage.get.item('currentUser')
     },
     methods: {
       updateInfos: function () {
-        // TODO: verify infos with vuelidate
+        this.$v.user.$touch()
+        if (this.$v.user.$error) {
+          Toast.create.negative({
+            html: 'E-mail non valide.',
+            icon: 'warning'
+          })
+          return
+        }
         let fireUser = firebase.auth().currentUser
         let updateProfilePromise = new Promise((resolve, reject) => {
-          if (fireUser.displayName !== this.user.pseudo) {
+          if (fireUser.displayName !== this.user.pseudo && this.user.pseudo !== '') {
             fireUser.updateProfile({
               displayName: this.user.pseudo
             }).then(() => {
@@ -126,9 +164,9 @@
               this.$http.put('/api/users/' + fireUser.uid, this.user)
                 .then(() => {
                   SessionStorage.set('currentUser', this.user)
-                  Toast.create({
+                  Toast.create.positive({
                     html: 'Informations modifiées avec succès',
-                    timeout: 2500
+                    icon: 'fa-check-circle'
                   })
                 })
             }
@@ -137,18 +175,50 @@
           })
       },
       updatePassword: function () {
-        // TODO: verify password with vuelidate
-        var user = firebase.auth().currentUser;
+        this.$v.oldpassword.$touch()
+        this.$v.password.$touch()
+        this.$v.confirmpassword.$touch()
+        if (this.$v.oldpassword.$error) {
+          Toast.create.negative({
+            html: 'Votre ancien mot de passe est obligatoire.',
+            icon: 'warning'
+          })
+          return
+        }
+        if (this.$v.password.$error) {
+          Toast.create.negative({
+            html: 'Le mot de passe doit faire minimum 6 charactères.',
+            icon: 'warning'
+          })
+          return
+        }
+        if (this.$v.confirmpassword.$error) {
+          Toast.create.negative({
+            html: 'Le mot de passe doit être identique.',
+            icon: 'warning'
+          })
+          return
+        }
 
-        user.updatePassword(this.password)
-          .then(function() {
-            Toast.create({
-              html: 'Mot de passe mis à jour',
-              timeout: 2500
+        let fireUser = firebase.auth().currentUser
+        let credential = firebase.auth.EmailAuthProvider.credential(
+          fireUser.email,
+          this.oldpassword
+        )
+
+        fireUser.reauthenticateWithCredential(credential).then(() => {
+          fireUser.updatePassword(this.password)
+            .then(function () {
+              Toast.create.positive({
+                html: 'Mot de passe mis à jour',
+                icon: 'fa-check-circle'
+              })
+            }).catch(function (error) {
+              console.log(error)
             })
-          }).catch(function(error) {
-            console.log(error)
-          });
+        }).catch(function (error) {
+          console.log(error)
+        })
       }
     }
   }

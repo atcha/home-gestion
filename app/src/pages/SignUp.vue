@@ -40,6 +40,7 @@
             type="password"
             float-label="Confirmer mot de passe"
             max-length="16"
+            @keyup.enter="register"
             v-model="confirmpassword"
             @blur="$v.confirmpassword.$touch"
             :error="$v.confirmpassword.$error"
