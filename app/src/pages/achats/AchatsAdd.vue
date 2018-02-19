@@ -414,6 +414,8 @@
         }
 
         // Test if there is no shelve or no store
+        // if there is no shelve or store we can't add pruchase
+        // An alert is displayed saying we have to create some
         if (!this.canAddPurchase) {
           this.displayAddPurchaseAlert = true
         }

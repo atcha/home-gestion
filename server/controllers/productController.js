@@ -45,3 +45,24 @@ exports.read_a_productbyname = (req, res) => {
         }
     });
 };
+
+exports.update_a_product = (req, res) => {
+    db.query('UPDATE `product` set ? WHERE id = ?',[req.body, req.params.productId], (error, results) => {
+        if (error) {
+            res.send(error);
+        } else {
+            res.json('changed ' + results.changedRows + ' rows');
+        }
+    });
+};
+
+
+exports.delete_a_product = (req, res) => {
+    db.query('DELETE FROM `product` WHERE id = ?', req.params.productId, (error) => {
+        if (error) {
+            res.send(error);
+        } else {
+            res.json({ message: 'Product successfully deleted' });
+        }
+    });
+};
